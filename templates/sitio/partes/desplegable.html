@@ -1,0 +1,27 @@
+{# Apartado desplegable del detalle. Variables: titulo, items (lista), numerada (pasos), abierto, nota, texto (en vez de items). #}
+<details class="group border-b border-borde"{% if abierto %} open{% endif %}>
+  <summary class="flex cursor-pointer list-none items-center justify-between gap-3 py-4 font-medium [&::-webkit-details-marker]:hidden">
+    {{ titulo }}
+    <span class="text-[22px] leading-none text-primario transition group-open:rotate-45" aria-hidden="true">+</span>
+  </summary>
+  <div class="pb-4 text-texto-2">
+    {% if texto %}
+      <div class="[&>p+p]:mt-3">{{ texto|linebreaks }}</div>
+    {% elif numerada %}
+      <ol>
+        {% for item in items %}
+          <li class="flex gap-3 py-1.5">
+            <span class="flex size-[26px] shrink-0 items-center justify-center rounded-full bg-suave text-[13px] font-medium text-primario-oscuro">{{ forloop.counter }}</span>{{ item }}
+          </li>
+        {% endfor %}
+      </ol>
+    {% else %}
+      <ul>
+        {% for item in items %}
+          <li class="flex gap-3 py-1.5"><span class="mt-[11px] size-1.5 shrink-0 rounded-full bg-primario" aria-hidden="true"></span>{{ item }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% if nota %}<p class="mt-2 text-[13px]">{{ nota }}</p>{% endif %}
+  </div>
+</details>

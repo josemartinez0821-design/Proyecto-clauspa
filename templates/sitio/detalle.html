@@ -1,0 +1,110 @@
+{% extends "sitio/base.html" %}
+{% load spa %}
+
+{% block titulo %}{{ servicio.nombre }} · {{ negocio.nombre }}{% endblock %}
+{% block descripcion %}{{ servicio.descripcion_breve }} Aprox. {{ servicio.duracion_texto }}. {{ servicio.precio_texto }}.{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+  <p class="pt-[22px] text-sm text-texto-2">
+    <a href="{% url 'inicio' %}" class="text-primario underline underline-offset-2">Inicio</a> /
+    <a href="{% url seccion_url %}" class="text-primario underline underline-offset-2">{{ seccion }}</a> /
+    {{ servicio.nombre }}
+  </p>
+
+  <div class="grid gap-12 pt-6 pb-16 lg:grid-cols-[1.05fr_1fr]">
+    {# Fotos: la grande y, si hay varias, miniaturas para cambiarla #}
+    {% with fotos=servicio.fotos.all %}
+    <div x-data="{ actual: 0 }" class="lg:sticky lg:top-[92px] lg:self-start">
+      <div class="relative aspect-square overflow-hidden rounded-3xl bg-suave">
+        {% for foto in fotos %}
+          <img src="{{ foto.imagen.url }}" alt="{{ foto.texto_alternativo }}" class="absolute inset-0 size-full object-cover"
+               x-show="actual === {{ forloop.counter0 }}"{% if not forloop.first %} x-cloak loading="lazy"{% endif %}>
+        {% empty %}
+          {% include "sitio/partes/foto_servicio.html" with foto=None %}
+        {% endfor %}
+        {% if servicio.es_combo %}<span class="absolute top-3.5 left-3.5 rounded-full bg-acento px-3 py-0.5 text-xs font-medium text-white">Combo</span>{% endif %}
+      </div>
+      {% if fotos|length > 1 %}
+        <div class="mt-3 grid grid-cols-4 gap-3">
+          {% for foto in fotos %}
+            <button type="button" class="aspect-square overflow-hidden rounded-xl ring-primario ring-offset-2"
+                    :class="actual === {{ forloop.counter0 }} && 'ring-2'" @click="actual = {{ forloop.counter0 }}"
+                    aria-label="Ver foto {{ forloop.counter }}: {{ foto.texto_alternativo }}">
+              <img src="{{ foto.imagen.url }}" alt="" loading="lazy" class="size-full object-cover">
+            </button>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+    {% endwith %}
+
+    <div>
+      <p class="text-xs tracking-[2px] text-primario uppercase">{{ servicio.get_categoria_display }}{% if servicio.es_combo %} · Combo{% endif %}</p>
+      <h1 class="mt-1.5 mb-3 text-[clamp(38px,5vw,54px)]">{{ servicio.nombre }}</h1>
+      <div class="text-[17px] text-texto-2 [&>p+p]:mt-3">{{ servicio.descripcion|linebreaks }}</div>
+
+      {% with ideal=servicio.ideal_para|lineas %}
+        {% if ideal %}
+          <h2 class="mt-6 mb-2.5 font-texto text-[15px] font-medium">Ideal para</h2>
+          <ul class="flex flex-wrap gap-2">
+            {% for item in ideal %}<li class="rounded-full bg-suave px-3.5 py-1 text-sm text-primario-oscuro">{{ item }}</li>{% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      <dl class="my-6 flex flex-wrap gap-x-7 gap-y-3 border-y border-borde py-[18px]">
+        <div>
+          <dt class="text-[13px] text-texto-2">Duración</dt>
+          <dd class="text-xl font-medium text-primario-oscuro">Aprox. {{ servicio.duracion_texto }}</dd>
+        </div>
+        <div>
+          <dt class="text-[13px] text-texto-2">Precio</dt>
+          <dd>{% include "sitio/partes/precio.html" with clase="text-xl" %}</dd>
+        </div>
+      </dl>
+
+      <div class="flex flex-wrap gap-2.5">
+        <a href="{% cita_whatsapp servicio %}" target="_blank" rel="noopener" class="btn btn-whatsapp min-w-[180px] flex-1 px-[22px] py-3.5">
+          <svg class="icono" aria-hidden="true"><use href="#i-chat"/></svg>Pedir cita por WhatsApp
+        </a>
+        {% if negocio.telefono %}
+          {# En el celular marca directo; en el computador muestra el número #}
+          <a href="{{ negocio.enlace_telefono }}" class="btn btn-borde min-w-[180px] flex-1 px-[22px] py-3.5">
+            <svg class="icono" aria-hidden="true"><use href="#i-tel"/></svg>
+            <span class="lg:hidden">Llamar</span><span class="hidden lg:inline">Llamar al {{ negocio.telefono_visible }}</span>
+          </a>
+        {% endif %}
+      </div>
+      <p class="mt-2.5 text-[13px] text-texto-2">Los tiempos son aproximados y pueden variar según cada persona. Te pedimos llegar 10 minutos antes.</p>
+
+      <div class="mt-6">
+        {% with pasos=servicio.que_incluye|lineas %}
+          {% if pasos %}{% include "sitio/partes/desplegable.html" with titulo="Qué incluye" items=pasos numerada=True abierto=True %}{% endif %}
+        {% endwith %}
+        {% with antes=servicio.cuidados_antes|lineas %}
+          {% if antes %}{% include "sitio/partes/desplegable.html" with titulo="Antes de tu cita" items=antes %}{% endif %}
+        {% endwith %}
+        {% with despues=servicio.cuidados_despues|lineas %}
+          {% if despues %}{% include "sitio/partes/desplegable.html" with titulo="Después de tu cita" items=despues nota=nota_despues %}{% endif %}
+        {% endwith %}
+        {% with consultar=servicio.consultar_antes|lineas %}
+          {% if consultar %}{% include "sitio/partes/desplegable.html" with titulo="Avísanos antes si…" items=consultar nota="Así preparamos tu tratamiento con seguridad o te recomendamos la mejor opción." %}{% endif %}
+        {% endwith %}
+        {% if servicio.recomendaciones %}
+          {% include "sitio/partes/desplegable.html" with titulo="Recomendaciones" texto=servicio.recomendaciones %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if relacionados %}
+    <section class="pb-[72px]" aria-labelledby="relacionados">
+      <h2 id="relacionados" class="mb-[26px] text-center text-[34px]">También te puede interesar</h2>
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-[22px]">
+        {% for servicio in relacionados %}{% include "sitio/partes/tarjeta_servicio.html" %}{% endfor %}
+      </div>
+    </section>
+  {% endif %}
+</div>
+{% endblock %}

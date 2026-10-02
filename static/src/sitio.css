@@ -87,3 +87,26 @@
     @apply text-xs tracking-[3px] text-primario uppercase;
   }
 }
+
+/*
+ * Puntos del slider (Swiper los crea). Van fuera de @layer a propósito: el CSS de Swiper no usa capas y
+ * le ganaría a cualquier regla dentro de una. Este archivo se carga después del de Swiper.
+ */
+.slider-puntos.swiper-pagination-bullets {
+  --swiper-pagination-bullet-horizontal-gap: 0;
+  display: flex;
+  gap: 8px;
+  width: auto;
+}
+.slider-puntos .swiper-pagination-bullet {
+  width: 9px;
+  height: 9px;
+  border-radius: 99px;
+  background: rgb(255 255 255 / 0.45);
+  opacity: 1;
+  transition: width 0.3s, background 0.3s;
+}
+.slider-puntos .swiper-pagination-bullet-active {
+  width: 28px;
+  background: #fff;
+}

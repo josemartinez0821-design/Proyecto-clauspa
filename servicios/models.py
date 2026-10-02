@@ -4,8 +4,11 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import F, Q
+from django.urls import reverse
 
 from contenido.imagenes import VALIDADORES_FOTO, convertir_a_webp
+
+from .formato import duracion, pesos
 
 MINUTOS = [MinValueValidator(5), MaxValueValidator(600)]
 
@@ -72,6 +75,11 @@ class Servicio(models.Model):
         validators=MINUTOS,
         help_text="En minutos. Si siempre dura lo mismo, escribe el mismo número.",
     )
+    duracion_por_sesion = models.BooleanField(
+        "la duración es por sesión",
+        default=False,
+        help_text="Márcalo en paquetes o planes de varias sesiones: se muestra «Aprox. 15 a 45 min por sesión».",
+    )
     precio = models.PositiveIntegerField("precio", help_text="En pesos. Puedes escribirlo con o sin puntos.")
     tipo_precio = models.CharField(
         "tipo de precio",
@@ -119,6 +127,25 @@ class Servicio(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    def get_absolute_url(self):
+        return reverse(f"detalle_{self.categoria}", args=[self.slug])
+
+    @property
+    def duracion_texto(self):
+        return duracion(self.duracion_min, self.duracion_max, self.duracion_por_sesion)
+
+    @property
+    def precio_texto(self):
+        """Precio principal: "$90.000" o "Desde $80.000" (el sufijo y el precio anterior van aparte)."""
+        texto = pesos(self.precio)
+        return f"Desde {texto}" if self.tipo_precio == self.TipoPrecio.DESDE else texto
+
+    @property
+    def foto_principal(self):
+        """La primera foto (usa las fotos precargadas con prefetch_related si las hay)."""
+        fotos = list(self.fotos.all())
+        return fotos[0] if fotos else None
 
     def clean(self):
         errores = {}

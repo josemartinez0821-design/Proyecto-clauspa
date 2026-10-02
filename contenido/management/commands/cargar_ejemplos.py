@@ -52,14 +52,16 @@ def foto_de_ejemplo(colores, ancho, alto, titulo=None):
 
     pequena = fuente(max(alto // 24, 14))
     if titulo:
+        # El texto cabe en el cuadrado del centro: el detalle del servicio muestra la foto recortada en cuadrado.
         tamano = alto // 12
-        while tamano > 16 and dibujo.textlength(titulo, font=fuente(tamano)) > ancho * 0.85:
+        while tamano > 16 and dibujo.textlength(titulo, font=fuente(tamano)) > min(ancho, alto) * 0.85:
             tamano -= 2
         dibujo.text((ancho / 2, alto / 2), titulo, font=fuente(tamano), anchor="ms", fill=(255, 255, 255, 240))
         dibujo.text((ancho / 2, alto / 2 + alto // 20), "Foto de ejemplo", font=pequena, anchor="ma",
                     fill=(255, 255, 255, 190))
     else:
-        dibujo.text((ancho - alto // 20, alto - alto // 20), "Foto de ejemplo", font=pequena, anchor="rd",
+        # Arriba a la derecha: abajo quedan los controles del slider.
+        dibujo.text((ancho - alto // 20, alto // 20), "Foto de ejemplo", font=pequena, anchor="ra",
                     fill=(255, 255, 255, 170))
 
     salida = BytesIO()
@@ -123,6 +125,9 @@ class Command(BaseCommand):
         if not negocio.texto_nosotros:
             negocio.titulo_nosotros = ejemplos.NOSOTROS_TITULO
             negocio.texto_nosotros = ejemplos.NOSOTROS_TEXTO
+            negocio.save()
+        if negocio.anios_experiencia is None:
+            negocio.anios_experiencia = ejemplos.NOSOTROS_ANIOS
             negocio.save()
         if not negocio.horarios.exists():
             for dia, abre, cierra in ejemplos.HORARIO:

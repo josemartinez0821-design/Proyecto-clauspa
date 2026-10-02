@@ -1,6 +1,6 @@
 import shutil
 import tempfile
-from datetime import date, time
+from datetime import date, time, timedelta
 from io import BytesIO, StringIO
 
 from django.contrib.auth.models import User
@@ -10,6 +10,7 @@ from django.core.management import CommandError, call_command
 from django.forms import inlineformset_factory
 from django.test import TestCase, override_settings
 from django.urls import reverse
+from django.utils import timezone
 from PIL import Image
 
 from servicios.models import FotoServicio, Servicio
@@ -199,6 +200,88 @@ class SitioPublico(TestCase):
         respuesta = self.client.get(reverse("contacto"))
         self.assertContains(respuesta, "Lunes")
         self.assertContains(respuesta, "9 a. m. a 1 p. m.")
+
+
+def crear_servicio(**cambios):
+    datos = {"nombre": "Masaje relajante", "slug": "masaje-relajante", "categoria": "corporal",
+             "descripcion_breve": "Breve.", "descripcion": "Texto.", "duracion_min": 50, "duracion_max": 60,
+             "precio": 70000}
+    datos.update(cambios)
+    return Servicio.objects.create(**datos)
+
+
+class PaginaDeInicio(TestCase):
+    def diapositiva(self, titulo, **cambios):
+        datos = {"imagen": "slider/x.webp", "titulo": titulo, "destino": Diapositiva.Destino.CONTACTO}
+        datos.update(cambios)
+        return Diapositiva.objects.create(**datos)
+
+    def test_el_slider_muestra_solo_las_vigentes(self):
+        hoy = timezone.localdate()
+        self.diapositiva("Siempre")
+        self.diapositiva("Desactivada", activa=False)
+        self.diapositiva("Ya pasó", fecha_inicio=hoy - timedelta(days=10), fecha_fin=hoy - timedelta(days=1))
+        self.diapositiva("Todavía no", fecha_inicio=hoy + timedelta(days=1))
+        self.diapositiva("Este mes", fecha_inicio=hoy, fecha_fin=hoy)
+        respuesta = self.client.get(reverse("inicio"))
+        self.assertEqual([d.titulo for d in respuesta.context["diapositivas"]], ["Siempre", "Este mes"])
+
+    def test_destacados_y_tecnologia(self):
+        crear_servicio(destacado=True)
+        crear_servicio(nombre="Depilación láser", slug="depilacion-laser")
+        Tecnologia.objects.create(nombre="Hidrafacial", descripcion="Limpia.")
+        Tecnologia.objects.create(nombre="Equipo oculto", descripcion="No sale.", visible=False)
+        respuesta = self.client.get(reverse("inicio"))
+        self.assertContains(respuesta, "Masaje relajante")
+        self.assertNotContains(respuesta, "Depilación láser")
+        self.assertContains(respuesta, 'id="tecnologia"')
+        self.assertNotContains(respuesta, "Equipo oculto")
+
+    def test_a_donde_lleva_el_boton_de_cada_diapositiva(self):
+        masaje = crear_servicio()
+        con_servicio = self.diapositiva("A", destino=Diapositiva.Destino.SERVICIO, servicio=masaje)
+        self.assertEqual(con_servicio.enlace, "/corporales/masaje-relajante/")
+        masaje.visible = False
+        masaje.save()
+        con_servicio.refresh_from_db()
+        self.assertEqual(con_servicio.enlace, "")  # servicio oculto: la diapositiva queda sin botón
+        self.assertEqual(self.diapositiva("B", destino=Diapositiva.Destino.TECNOLOGIA).enlace, "/#tecnologia")
+        self.assertEqual(self.diapositiva("C", destino=Diapositiva.Destino.FACIALES).enlace, "/faciales/")
+        self.assertTrue(self.diapositiva("D", destino=Diapositiva.Destino.WHATSAPP).enlace.startswith("https://wa.me/"))
+
+
+class OtrasPaginas(TestCase):
+    def test_contacto_muestra_las_preguntas_visibles(self):
+        PreguntaFrecuente.objects.create(pregunta="¿Cómo pido una cita?", respuesta="Por WhatsApp.")
+        PreguntaFrecuente.objects.create(pregunta="Pregunta oculta", respuesta="No.", visible=False)
+        respuesta = self.client.get(reverse("contacto"))
+        self.assertContains(respuesta, "¿Cómo pido una cita?")
+        self.assertNotContains(respuesta, "Pregunta oculta")
+
+    def test_el_mapa_solo_aparece_con_la_ciudad(self):
+        negocio = Negocio.cargar()
+        negocio.direccion, negocio.barrio = "Carrera 9 # 9A-21", "Canadá"
+        negocio.save()
+        self.assertNotContains(self.client.get(reverse("contacto")), "<iframe")
+        negocio.ciudad = "Pueblo"
+        negocio.save()
+        respuesta = self.client.get(reverse("contacto"))
+        self.assertContains(respuesta, "<iframe")
+        self.assertContains(respuesta, "Carrera%209%20%23%209A-21%2C%20Barrio%20Canad%C3%A1%2C%20Pueblo%2C%20Colombia")
+
+    def test_nosotros_muestra_los_anios_de_experiencia(self):
+        negocio = Negocio.cargar()
+        negocio.texto_nosotros, negocio.anios_experiencia = "Nuestra historia.", 15
+        negocio.save()
+        respuesta = self.client.get(reverse("nosotros"))
+        self.assertContains(respuesta, "15+")
+        self.assertContains(respuesta, "Nuestra historia.")
+
+    def test_pagina_no_encontrada(self):
+        respuesta = self.client.get("/esta-pagina-no-existe/")
+        self.assertEqual(respuesta.status_code, 404)
+        self.assertContains(respuesta, "No encontramos esta página", status_code=404)
+        self.assertContains(respuesta, "Volver al inicio", status_code=404)
 
 
 class Slider(TestCase):

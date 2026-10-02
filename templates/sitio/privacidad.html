@@ -1,0 +1,36 @@
+{% extends "sitio/base.html" %}
+
+{% block titulo %}Aviso de privacidad · {{ negocio.nombre }}{% endblock %}
+{% block descripcion %}Qué datos personales usa {{ negocio.nombre }} y para qué.{% endblock %}
+
+{% block contenido %}
+  {% include "sitio/partes/cabecera_pagina.html" with titulo="Aviso de privacidad" texto="Qué datos usamos y para qué." %}
+
+  <section class="py-14 sm:py-[72px]">
+    <div class="contenedor max-w-3xl text-texto-2 [&_h2]:mt-9 [&_h2]:mb-2.5 [&_h2]:text-[28px] [&_h2]:text-texto [&_p+p]:mt-3">
+      <p class="text-sm">Última actualización: 1 de octubre de 2026.</p>
+
+      <h2>Quién es responsable</h2>
+      <p>
+        {{ negocio.nombre }}{% if negocio.direccion %}, {{ negocio.direccion }}{% if negocio.ubicacion %}, {{ negocio.ubicacion }}{% endif %}{% endif %}.
+        Puedes escribirnos por <a href="{{ negocio.enlace_whatsapp }}" target="_blank" rel="noopener" class="text-primario underline underline-offset-2">WhatsApp</a>{% if negocio.telefono %} o llamarnos al {{ negocio.telefono_visible }}{% endif %}.
+      </p>
+
+      <h2>Qué datos recibimos</h2>
+      <p>Esta página no tiene formularios ni te pide que te registres. Si nos escribes por WhatsApp o nos llamas, recibimos tu nombre, tu número y lo que nos cuentes, por ejemplo el servicio que te interesa.</p>
+
+      <h2>Para qué los usamos</h2>
+      <p>Solo para responderte, agendar y confirmar tu cita, y darte indicaciones sobre tu tratamiento. No vendemos ni compartimos tus datos, y no te enviamos publicidad si no la pides.</p>
+      <p>Si nos cuentas algo sobre tu salud (alergias, embarazo, medicamentos) para cuidar tu tratamiento, lo usamos solo para eso y con total reserva.</p>
+
+      <h2>Servicios de otras empresas</h2>
+      <p>Los botones de WhatsApp abren la aplicación de WhatsApp, el mapa es de Google Maps y las letras de la página se cargan desde Google Fonts. Esas empresas pueden recibir datos técnicos de tu visita, como tu dirección IP, según sus propias políticas. Esta página no usa cookies de publicidad ni de seguimiento.</p>
+
+      <h2>Tus derechos</h2>
+      <p>Según la Ley 1581 de 2012 de protección de datos personales, puedes conocer, actualizar, corregir o pedir que borremos tus datos, y retirar tu autorización cuando quieras. Escríbenos por WhatsApp{% if negocio.telefono %} o llámanos{% endif %} y lo atendemos.</p>
+
+      <h2>Cambios</h2>
+      <p>Si cambiamos este aviso, por ejemplo cuando abramos la agenda en línea, publicaremos aquí la nueva versión con su fecha.</p>
+    </div>
+  </section>
+{% endblock %}

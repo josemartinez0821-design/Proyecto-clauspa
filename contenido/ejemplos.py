@@ -248,6 +248,7 @@ Te hiciste una cirugía en la zona
 Tienes alguna enfermedad del corazón""",
         "duracion_min": 45,
         "duracion_max": 60,
+        "duracion_por_sesion": True,
         "precio": 80000,
         "tipo_precio": "desde",
         "sufijo_precio": "por sesión",
@@ -280,7 +281,7 @@ Gel calmante y bloqueador""",
         "slug": "paquete-depilacion-laser-5-sesiones",
         "categoria": "corporal",
         "es_combo": True,
-        "descripcion_breve": "5 sesiones en una misma zona, a mejor precio. Cada sesión dura de 15 a 45 min.",
+        "descripcion_breve": "5 sesiones en una misma zona, a mejor precio que pagándolas por separado.",
         "descripcion": """La depilación láser necesita varias sesiones, así que el paquete te deja las 5 primeras en una misma zona a mejor precio que pagándolas una por una.
 
 Las sesiones se programan con 4 a 6 semanas entre una y otra, que es el tiempo que el vello tarda en volver a crecer. El precio depende de la zona.""",
@@ -295,6 +296,7 @@ Gel calmante y bloqueador en cada sesión""",
         "consultar_antes": LASER_CONSULTAR,
         "duracion_min": 15,
         "duracion_max": 45,
+        "duracion_por_sesion": True,
         "precio": 220000,
         "tipo_precio": "desde",
         "sufijo_precio": "las 5 sesiones",
@@ -361,6 +363,7 @@ PREGUNTAS = [
 HORARIO = [(dia, abre, cierra) for dia in range(1, 7) for abre, cierra in (("09:00", "13:00"), ("14:00", "19:00"))]
 
 NOSOTROS_TITULO = "Manos expertas que cuidan de ti"
+NOSOTROS_ANIOS = 15
 NOSOTROS_TEXTO = """En Claudia Spa cada tratamiento se adapta a tu piel y a tu cuerpo. Te atiende siempre la misma persona: una cosmetóloga con más de 15 años de experiencia y formación en cosmiatría y en enfermería.
 
 Un espacio tranquilo, limpio y pensado para que te tomes un tiempo para ti."""

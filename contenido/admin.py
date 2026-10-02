@@ -97,7 +97,7 @@ class FotoLocalInline(TabularInline):
 
 @admin.register(Nosotros)
 class NosotrosAdmin(UnaSolaFilaAdmin):
-    fields = ("titulo_nosotros", "texto_nosotros", "foto_duena")
+    fields = ("titulo_nosotros", "texto_nosotros", "foto_duena", "anios_experiencia")
     inlines = [FotoLocalInline]
     warn_unsaved_form = True
     formfield_overrides = {models.TextField: {"widget": UnfoldAdminTextareaWidget(attrs={"rows": 8})}}

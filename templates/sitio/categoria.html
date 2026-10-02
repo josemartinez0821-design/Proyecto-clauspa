@@ -1,0 +1,20 @@
+{% extends "sitio/base.html" %}
+
+{% block titulo %}{{ titulo }} · {{ negocio.nombre }}{% endblock %}
+{% block descripcion %}{{ titulo }} en {{ negocio.nombre }}: {{ texto }} Precios y duraciones aproximadas.{% endblock %}
+
+{% block contenido %}
+  {% include "sitio/partes/cabecera_pagina.html" %}
+  <section class="py-14 sm:py-[72px]">
+    <div class="contenedor">
+      {% if servicios %}
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-[22px]">
+          {% for servicio in servicios %}{% include "sitio/partes/tarjeta_servicio.html" %}{% endfor %}
+        </div>
+        <p class="mt-8 text-center text-[13px] text-texto-2">Los tiempos son aproximados y pueden variar según cada persona.</p>
+      {% else %}
+        <p class="text-center text-texto-2">Muy pronto verás aquí nuestros servicios. Mientras tanto, escríbenos por WhatsApp.</p>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

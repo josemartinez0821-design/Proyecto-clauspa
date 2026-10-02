@@ -1,0 +1,8 @@
+{# Foto de un servicio o, si aún no tiene, un ícono sobre el fondo suave. Variables: foto, servicio, carga ("lazy" o "eager"). #}
+{% if foto %}
+  <img src="{{ foto.imagen.url }}" alt="{{ alt|default:'' }}" loading="{{ carga|default:'lazy' }}" class="size-full object-cover">
+{% else %}
+  <span class="flex size-full items-center justify-center text-primario">
+    <svg class="icono size-11 stroke-[1.2]" aria-hidden="true"><use href="#{% if servicio.categoria == 'facial' %}i-rostro{% else %}i-hoja{% endif %}"/></svg>
+  </span>
+{% endif %}

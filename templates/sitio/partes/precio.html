@@ -1,0 +1,8 @@
+{% load spa %}
+{# Precio de un servicio: anterior tachado (si hay), "Desde $80.000" y el sufijo. Variable opcional: clase. #}
+<p class="{{ clase|default:'text-[21px]' }} font-medium text-primario-oscuro">
+  {% if servicio.precio_anterior %}
+    <s class="mr-1.5 text-[0.72em] font-normal text-texto-2"><span class="sr-only">Antes </span>{{ servicio.precio_anterior|pesos }}</s><span class="sr-only">Ahora </span>
+  {% endif %}{{ servicio.precio_texto }}
+  {% if servicio.sufijo_precio %}<small class="text-[0.67em] font-normal text-texto-2">{{ servicio.sufijo_precio }}</small>{% endif %}
+</p>

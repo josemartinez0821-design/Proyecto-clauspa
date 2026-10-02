@@ -1,0 +1,57 @@
+{% extends "sitio/base.html" %}
+
+{% block titulo %}Nosotros · {{ negocio.nombre }}{% endblock %}
+{% block descripcion %}Conoce {{ negocio.nombre }}: atención personalizada en tratamientos faciales y corporales.{% endblock %}
+
+{% block contenido %}
+  {% include "sitio/partes/cabecera_pagina.html" with titulo="Nosotros" texto="Conoce a quien cuida de ti." %}
+
+  <section class="py-14 sm:py-[72px]">
+    <div class="contenedor grid items-center gap-12 md:grid-cols-[1fr_1.1fr]">
+      <div class="aspect-[4/5] overflow-hidden rounded-3xl bg-suave">
+        {% if negocio.foto_duena %}
+          <img src="{{ negocio.foto_duena.url }}" alt="{{ negocio.nombre }}" class="size-full object-cover">
+        {% else %}
+          <span class="flex size-full items-center justify-center text-primario"><svg class="icono size-16 stroke-[1.2]" aria-hidden="true"><use href="#i-usuario"/></svg></span>
+        {% endif %}
+      </div>
+      <div>
+        <p class="text-xs tracking-[2px] text-primario uppercase">Nosotros</p>
+        <h2 class="mt-2 mb-4 text-[clamp(32px,4.5vw,46px)]">{{ negocio.titulo_nosotros }}</h2>
+        <div class="text-texto-2 [&>p+p]:mt-3.5">{{ negocio.texto_nosotros|linebreaks }}</div>
+
+        <div class="my-6 flex flex-wrap gap-9">
+          {% if negocio.anios_experiencia %}
+            <div><b class="block font-titulo text-[42px] leading-none text-primario-oscuro">{{ negocio.anios_experiencia }}+</b><span class="text-sm text-texto-2">años de experiencia</span></div>
+          {% endif %}
+          <div><b class="block font-titulo text-[42px] leading-none text-primario-oscuro">1 a 1</b><span class="text-sm text-texto-2">atención personalizada</span></div>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <a href="{{ negocio.enlace_whatsapp }}" target="_blank" rel="noopener" class="btn btn-whatsapp">
+            <svg class="icono" aria-hidden="true"><use href="#i-chat"/></svg>Hablemos por WhatsApp
+          </a>
+          {% if negocio.enlace_resenas %}
+            <a href="{{ negocio.enlace_resenas }}" target="_blank" rel="noopener" class="btn btn-borde">Lee las reseñas en Google</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% if fotos %}
+    <section class="pb-14 sm:pb-[72px]">
+      <div class="contenedor">
+        <div class="mb-10 text-center">
+          <p class="antetitulo mb-2.5">El spa</p>
+          <h2 class="text-[clamp(32px,4.5vw,44px)]">Un espacio pensado para ti</h2>
+        </div>
+        <div class="grid gap-[18px] sm:grid-cols-3">
+          {% for foto in fotos %}
+            <img src="{{ foto.imagen.url }}" alt="{{ foto.texto_alternativo }}" loading="lazy" class="aspect-[4/3] w-full rounded-[20px] object-cover">
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

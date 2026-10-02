@@ -1,0 +1,23 @@
+{% load spa %}
+{# Tarjeta de un servicio (Inicio, Faciales, Corporales y "También te puede interesar"). #}
+<article class="flex flex-col overflow-hidden rounded-[20px] border border-borde bg-white transition hover:-translate-y-[3px] hover:border-acento">
+  <a href="{{ servicio.get_absolute_url }}" class="relative block aspect-[4/3] bg-suave" tabindex="-1" aria-hidden="true">
+    {% include "sitio/partes/foto_servicio.html" with foto=servicio.foto_principal %}
+    {% if servicio.es_combo %}<span class="absolute top-3.5 left-3.5 rounded-full bg-acento px-3 py-0.5 text-xs font-medium text-white">Combo</span>{% endif %}
+  </a>
+  <div class="flex flex-1 flex-col px-5 pt-[18px] pb-5">
+    <span class="text-xs tracking-[2px] text-primario uppercase">{{ servicio.get_categoria_display }}</span>
+    <h3 class="mt-1 mb-1.5 text-[25px]"><a href="{{ servicio.get_absolute_url }}" class="hover:text-primario">{{ servicio.nombre }}</a></h3>
+    <p class="flex-1 text-[15px] text-texto-2">{{ servicio.descripcion_breve }}</p>
+    <p class="mt-3.5 mb-1 flex items-center gap-1.5 text-sm text-texto-2">
+      <svg class="icono size-[17px]" aria-hidden="true"><use href="#i-reloj"/></svg>Aprox. {{ servicio.duracion_texto }}
+    </p>
+    {% include "sitio/partes/precio.html" %}
+    <div class="mt-3.5 flex flex-wrap gap-2">
+      <a href="{{ servicio.get_absolute_url }}" class="btn btn-borde flex-auto px-4 py-2 text-sm">Ver detalle<span class="sr-only"> de {{ servicio.nombre }}</span></a>
+      <a href="{% cita_whatsapp servicio %}" target="_blank" rel="noopener" class="btn btn-whatsapp flex-auto px-4 py-2 text-sm">
+        <svg class="icono size-[18px]" aria-hidden="true"><use href="#i-chat"/></svg>Pedir cita<span class="sr-only"> para {{ servicio.nombre }} por WhatsApp</span>
+      </a>
+    </div>
+  </div>
+</article>

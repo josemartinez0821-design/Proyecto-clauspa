@@ -10,10 +10,6 @@ from .forms import ServicioForm
 from .models import FotoServicio, Servicio
 
 
-def pesos(valor):
-    return "$" + f"{valor:,}".replace(",", ".")
-
-
 class FotoServicioInline(TabularInline):
     model = FotoServicio
     fields = ("imagen", "texto_alternativo", "orden")
@@ -55,22 +51,22 @@ class ServicioAdmin(ModelAdmin):
             "Precio y duración",
             {
                 "classes": ["tab"],
-                "fields": (("duracion_min", "duracion_max"), "tipo_precio", "precio", "sufijo_precio", "precio_anterior"),
+                "fields": (
+                    ("duracion_min", "duracion_max"),
+                    "duracion_por_sesion",
+                    "tipo_precio",
+                    "precio",
+                    "sufijo_precio",
+                    "precio_anterior",
+                ),
             },
         ),
     )
 
     @display(description="duración", ordering="duracion_min")
     def duracion(self, servicio):
-        if servicio.duracion_min == servicio.duracion_max:
-            return f"{servicio.duracion_min} min"
-        return f"{servicio.duracion_min} a {servicio.duracion_max} min"
+        return servicio.duracion_texto
 
     @display(description="precio", ordering="precio")
     def precio_completo(self, servicio):
-        texto = pesos(servicio.precio)
-        if servicio.tipo_precio == Servicio.TipoPrecio.DESDE:
-            texto = "Desde " + texto
-        if servicio.sufijo_precio:
-            texto += " " + servicio.sufijo_precio
-        return texto
+        return f"{servicio.precio_texto} {servicio.sufijo_precio}".strip()

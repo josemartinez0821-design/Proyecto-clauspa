@@ -7,6 +7,8 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import F, Q
+from django.urls import reverse
+from django.utils import timezone
 from django.utils.functional import cached_property
 
 from .horario import resumir_horario
@@ -69,6 +71,12 @@ class Negocio(models.Model):
     foto_duena = models.ImageField(
         "tu foto", upload_to="negocio/", blank=True, validators=VALIDADORES_FOTO
     )
+    anios_experiencia = models.PositiveSmallIntegerField(
+        "años de experiencia",
+        null=True,
+        blank=True,
+        help_text="Opcional. Se muestra destacado, por ejemplo «15+ años de experiencia».",
+    )
 
     actualizado = models.DateTimeField("actualizado", auto_now=True)
 
@@ -109,6 +117,34 @@ class Negocio(models.Model):
     @cached_property
     def horario_resumido(self):
         return resumir_horario(self.horarios.all())
+
+    @property
+    def horario_principal(self):
+        """El primer grupo de días en que se atiende (para la franja corta de Inicio)."""
+        return next((grupo for grupo in self.horario_resumido if grupo["franjas"]), None)
+
+    @property
+    def direccion_completa(self):
+        """Para buscarla en Google Maps. Sin ciudad no sirve (hay muchos barrios Canadá), así que queda vacía."""
+        if not (self.direccion and self.ciudad):
+            return ""
+        barrio = f"Barrio {self.barrio}" if self.barrio else ""
+        return ", ".join(parte for parte in (self.direccion, barrio, self.ciudad, "Colombia") if parte)
+
+    @property
+    def enlace_como_llegar(self):
+        if self.enlace_mapa:
+            return self.enlace_mapa
+        if self.direccion_completa:
+            return f"https://www.google.com/maps/dir/?api=1&destination={quote(self.direccion_completa)}"
+        return ""
+
+    @property
+    def mapa_incrustado(self):
+        """Dirección del mapa que se muestra dentro de la página Contacto."""
+        if not self.direccion_completa:
+            return ""
+        return f"https://www.google.com/maps?q={quote(self.direccion_completa)}&output=embed"
 
     @property
     def ubicacion(self):
@@ -176,8 +212,21 @@ class HorarioAtencion(models.Model):
             raise ValidationError({"hora_cierre": "Debe ser después de la hora en que abre."})
 
 
+class DiapositivaQuerySet(models.QuerySet):
+    def vigentes(self):
+        """Las activas que se deben ver hoy (sin fechas, o con hoy dentro de sus fechas)."""
+        hoy = timezone.localdate()
+        return self.filter(
+            Q(activa=True),
+            Q(fecha_inicio__isnull=True) | Q(fecha_inicio__lte=hoy),
+            Q(fecha_fin__isnull=True) | Q(fecha_fin__gte=hoy),
+        )
+
+
 class Diapositiva(models.Model):
     """Una diapositiva del slider de Inicio. Puede haber de 1 a 4 activas."""
+
+    objects = DiapositivaQuerySet.as_manager()
 
     MAXIMO_ACTIVAS = 4
 
@@ -250,6 +299,17 @@ class Diapositiva(models.Model):
             errores["activa"] = "Es la única diapositiva activa y el slider de Inicio quedaría vacío. Activa otra primero."
         if errores:
             raise ValidationError(errores)
+
+    @property
+    def enlace(self):
+        """A dónde lleva el botón. Vacío si lleva a un servicio que ya no está visible (entonces no hay botón)."""
+        if self.destino == self.Destino.SERVICIO:
+            return self.servicio.get_absolute_url() if self.servicio and self.servicio.visible else ""
+        if self.destino == self.Destino.WHATSAPP:
+            return Negocio.cargar().enlace_whatsapp()
+        if self.destino == self.Destino.TECNOLOGIA:
+            return reverse("inicio") + "#tecnologia"
+        return reverse(self.destino)  # faciales, corporales o contacto: se llaman igual que sus direcciones
 
     def es_la_unica_activa(self):
         if not self.pk:

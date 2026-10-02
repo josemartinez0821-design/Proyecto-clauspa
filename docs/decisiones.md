@@ -48,6 +48,10 @@ para que ella cambie servicios, precios, fotos y textos sin ayuda. Las citas se 
 | 01/10/2026 | Tailwind CSS 4 (sí funciona con Smart App Control), Alpine.js y Swiper instalados con npm. El CSS compilado y las librerías se guardan en `static/` y se suben al repositorio: el servidor no necesita Node |
 | 01/10/2026 | Letras desde Google Fonts por ahora; en la etapa 6 se decide si se sirven desde el propio sitio |
 | 01/10/2026 | Mientras no haya número de WhatsApp, los botones abren WhatsApp con el mensaje y dejan elegir el chat |
+| 01/10/2026 | Servicios con "la duración es por sesión" (paquetes y planes): se muestra "Aprox. 15 a 45 min por sesión" |
+| 01/10/2026 | Nosotros muestra "años de experiencia" (campo opcional del panel) y "1 a 1, atención personalizada" |
+| 01/10/2026 | El mapa de Contacto aparece solo cuando hay ciudad (sin ella, Google pondría el pin en otro barrio Canadá); "Cómo llegar" usa el enlace de Google Maps del panel o la dirección |
+| 01/10/2026 | Aviso de privacidad con un texto base para la fase 1 (sin formularios); conviene que lo revise alguien que sepa de la Ley 1581 antes de publicar, y se actualiza en la fase 2 |
 
 ## Lo que NO hace (por ahora)
 
@@ -91,8 +95,8 @@ aplicación para instalar y ficha clínica (datos de salud sensibles).
 | 2. Las tablas | Modelos de la fase 1, panel con sus secciones, traducir Unfold al español | ✅ Lista (01/10/2026) |
 | 3. Datos de ejemplo | Los 8 servicios con descripción y cuidados completos, el slider, la tecnología, las preguntas y el horario | ✅ Lista (01/10/2026) |
 | 4. El diseño | Tailwind, plantilla base, encabezado, pie y WhatsApp flotante | ✅ Lista (01/10/2026) |
-| 5. Las páginas | Inicio, Faciales, Corporales, detalle, Nosotros, Contacto, aviso de privacidad, 404 | Siguiente |
-| 6. Calidad | Fotos WebP, Google (SEO), pruebas en computador y celular | |
+| 5. Las páginas | Inicio, Faciales, Corporales, detalle, Nosotros, Contacto, aviso de privacidad, 404 | ✅ Lista (01/10/2026) |
+| 6. Calidad | Fotos en varios tamaños, letras desde el propio sitio, Google (SEO), accesibilidad, pruebas en computador y celular | Siguiente |
 | 7. Prueba con la dueña | Ajustes y publicación | |
 | Fase 2 | Agenda en línea | |
 

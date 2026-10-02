@@ -1,0 +1,92 @@
+{% extends "sitio/base.html" %}
+
+{% block titulo %}Contacto · {{ negocio.nombre }}{% endblock %}
+{% block descripcion %}Dirección, horario, WhatsApp y teléfono de {{ negocio.nombre }}. Pide tu cita.{% endblock %}
+
+{% block contenido %}
+  {% if negocio.barrio %}
+    {% include "sitio/partes/cabecera_pagina.html" with titulo="Contacto" texto="Te esperamos en el barrio "|add:negocio.barrio|add:"." %}
+  {% else %}
+    {% include "sitio/partes/cabecera_pagina.html" with titulo="Contacto" texto="Escríbenos, llámanos o visítanos." %}
+  {% endif %}
+
+  <section class="py-14 sm:py-[72px]">
+    <div class="contenedor">
+      <div class="grid gap-7 md:grid-cols-2">
+        <div class="rounded-[22px] border border-borde bg-white p-7">
+          {% if negocio.direccion %}
+            <div class="flex gap-3.5 border-b border-borde py-3.5">
+              <svg class="icono mt-0.5 size-[22px] text-primario" aria-hidden="true"><use href="#i-pin"/></svg>
+              <div><b class="block font-medium">{{ negocio.direccion }}</b><span class="text-[15px] text-texto-2">{{ negocio.ubicacion }}</span></div>
+            </div>
+          {% endif %}
+          {% if negocio.horario_resumido %}
+            <div class="flex gap-3.5 border-b border-borde py-3.5">
+              <svg class="icono mt-0.5 size-[22px] text-primario" aria-hidden="true"><use href="#i-reloj"/></svg>
+              <dl class="text-[15px]">
+                {% for grupo in negocio.horario_resumido %}
+                  <div class="{% if not forloop.first %}mt-1.5{% endif %}">
+                    <dt class="font-medium">{{ grupo.dias }}</dt>
+                    <dd class="text-texto-2">{% if grupo.franjas %}{{ grupo.franjas|join:" · " }}{% else %}Cerrado{% endif %}</dd>
+                  </div>
+                {% endfor %}
+              </dl>
+            </div>
+          {% endif %}
+          <div class="flex gap-3.5 py-3.5">
+            <svg class="icono mt-0.5 size-[22px] text-primario" aria-hidden="true"><use href="#i-chat"/></svg>
+            <div>
+              <b class="block font-medium">WhatsApp{% if negocio.telefono %} y teléfono{% endif %}</b>
+              <span class="text-[15px] text-texto-2">Respondemos lo más pronto posible{% if negocio.telefono %} · {{ negocio.telefono_visible }}{% endif %}</span>
+            </div>
+          </div>
+
+          <div class="mt-[18px] flex flex-wrap gap-2.5">
+            <a href="{{ negocio.enlace_whatsapp }}" target="_blank" rel="noopener" class="btn btn-whatsapp min-w-[160px] flex-1">
+              <svg class="icono" aria-hidden="true"><use href="#i-chat"/></svg>WhatsApp
+            </a>
+            {% if negocio.telefono %}
+              <a href="{{ negocio.enlace_telefono }}" class="btn btn-borde min-w-[160px] flex-1">
+                <svg class="icono" aria-hidden="true"><use href="#i-tel"/></svg>Llamar
+              </a>
+            {% endif %}
+          </div>
+          <p class="mt-3 text-[13px] text-texto-2">También atendemos a domicilio: pregunta por WhatsApp.</p>
+          {% if negocio.instagram or negocio.facebook or negocio.tiktok %}
+            <p class="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-[15px]">
+              {% if negocio.instagram %}<a href="{{ negocio.instagram }}" target="_blank" rel="noopener" class="text-primario underline underline-offset-2">Instagram</a>{% endif %}
+              {% if negocio.facebook %}<a href="{{ negocio.facebook }}" target="_blank" rel="noopener" class="text-primario underline underline-offset-2">Facebook</a>{% endif %}
+              {% if negocio.tiktok %}<a href="{{ negocio.tiktok }}" target="_blank" rel="noopener" class="text-primario underline underline-offset-2">TikTok</a>{% endif %}
+            </p>
+          {% endif %}
+        </div>
+
+        <div class="flex flex-col gap-3">
+          {% if negocio.mapa_incrustado %}
+            <iframe src="{{ negocio.mapa_incrustado }}" title="Mapa con la ubicación de {{ negocio.nombre }}" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade" class="min-h-[320px] w-full flex-1 rounded-[22px] border border-borde"></iframe>
+          {% else %}
+            <div class="flex min-h-[320px] flex-1 flex-col items-center justify-center gap-2.5 rounded-[22px] border border-borde bg-suave p-6 text-center text-primario">
+              <svg class="icono size-12 stroke-[1.2]" aria-hidden="true"><use href="#i-pin"/></svg>
+              {% if negocio.direccion %}<b class="text-texto">{{ negocio.direccion }}</b><span class="text-[15px] text-texto-2">{{ negocio.ubicacion }}</span>{% endif %}
+            </div>
+          {% endif %}
+          {% if negocio.enlace_como_llegar %}
+            <a href="{{ negocio.enlace_como_llegar }}" target="_blank" rel="noopener" class="btn btn-primario">
+              <svg class="icono" aria-hidden="true"><use href="#i-pin"/></svg>Cómo llegar
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if preguntas %}
+        <div class="mt-7 rounded-[22px] border border-borde bg-white p-7">
+          <h2 class="mb-1.5 text-[28px]">Preguntas frecuentes</h2>
+          {% for pregunta in preguntas %}
+            {% include "sitio/partes/desplegable.html" with titulo=pregunta.pregunta texto=pregunta.respuesta %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

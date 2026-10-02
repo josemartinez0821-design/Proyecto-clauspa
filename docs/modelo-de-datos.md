@@ -14,7 +14,7 @@ propias (usuarios, permisos, sesiones, historial del panel).
 ### `negocio` (una sola fila)
 nombre, lema ("Relajación y belleza"), logo, whatsapp, telefono, direccion, barrio, ciudad, enlace_mapa,
 saludo_whatsapp, instagram, facebook, tiktok, enlace_resenas, titulo_nosotros, texto_nosotros, foto_duena,
-actualizado.
+anios_experiencia (opcional), actualizado.
 Siempre tiene id 1 (`Negocio.cargar()`). WhatsApp y teléfono se guardan solo con los 10 dígitos (se aceptan con
 espacios, guiones o +57). La sección **Nosotros** del panel edita esta misma fila (modelo proxy `Nosotros`, sin tabla
 propia).
@@ -28,7 +28,7 @@ y para calcular la agenda (fase 2). La FK a negocio permite editar el horario de
 nombre (único), slug (dirección web, único), categoria (facial o corporal), es_combo, descripcion_breve,
 descripcion, **ideal_para** (uno por línea), que_incluye (un paso por línea), recomendaciones (frecuencia, sesiones),
 **cuidados_antes** (uno por línea), **cuidados_despues** (uno por línea), **consultar_antes** ("Avísanos antes si…",
-uno por línea), duracion_min y duracion_max (minutos), precio (pesos enteros), tipo_precio (fijo o "desde"),
+uno por línea), duracion_min y duracion_max (minutos), duracion_por_sesion, precio (pesos enteros), tipo_precio (fijo o "desde"),
 precio_anterior (opcional, para mostrar el ahorro), sufijo_precio (opcional, por ejemplo "por sesión"),
 destacado, visible, orden, creado, actualizado.
 `requiere_abono` y `se_pide_en_linea` se agregan en la fase 2, con su migración.

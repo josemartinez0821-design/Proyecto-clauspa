@@ -9,8 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Great+Vibes&family=Jost:wght@400;500&display=swap">
-  <link rel="stylesheet" href="{% static 'css/sitio.css' %}">
+  {# Primero los estilos de cada página (por ejemplo, Swiper) y después los del sitio, que pueden ajustarlos #}
   {% block cabeza %}{% endblock %}
+  <link rel="stylesheet" href="{% static 'css/sitio.css' %}">
   <script defer src="{% static 'vendor/alpine.min.js' %}"></script>
 </head>
 <body class="flex min-h-screen flex-col">
