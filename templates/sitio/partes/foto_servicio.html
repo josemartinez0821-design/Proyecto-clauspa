@@ -1,6 +1,9 @@
-{# Foto de un servicio o, si aún no tiene, un ícono sobre el fondo suave. Variables: foto, servicio, carga ("lazy" o "eager"). #}
+{% load spa %}
+{# Foto de un servicio o, si aún no tiene, un ícono sobre el fondo suave. Variables: foto, servicio, carga, alt, tamanos. #}
 {% if foto %}
-  <img src="{{ foto.imagen.url }}" alt="{{ alt|default:'' }}" loading="{{ carga|default:'lazy' }}" class="size-full object-cover">
+  <img src="{{ foto.imagen.url }}" srcset="{{ foto.imagen|srcset:1600 }}"
+       sizes="{{ tamanos|default:'(min-width: 1140px) 260px, (min-width: 640px) 45vw, 92vw' }}"
+       alt="{{ alt|default:'' }}" loading="{{ carga|default:'lazy' }}" class="absolute inset-0 size-full object-cover">
 {% else %}
   <span class="flex size-full items-center justify-center text-primario">
     <svg class="icono size-11 stroke-[1.2]" aria-hidden="true"><use href="#{% if servicio.categoria == 'facial' %}i-rostro{% else %}i-hoja{% endif %}"/></svg>

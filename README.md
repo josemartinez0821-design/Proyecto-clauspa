@@ -34,6 +34,9 @@ Tailwind CSS, Alpine.js y Swiper (en el sitio público).
    .venv\Scripts\python.exe manage.py cargar_ejemplos
    ```
 
+   Con `--fotos <carpeta>` usa fotos de referencia en lugar de las generadas (`servicios/<slug>.jpg`,
+   `servicios/<slug>-2.jpg`, `slider/1.jpg`… y `local/1.jpg`…). Esas fotos no se suben al repositorio.
+
 6. Encender el servidor y abrir <http://127.0.0.1:8000/panel/>:
 
    ```bash
@@ -52,8 +55,18 @@ npm install
 npm run css:vigilar
 ```
 
-`css:vigilar` recompila mientras se editan las plantillas. Antes de un commit: `npm run construir` (copia Alpine.js y
-Swiper a `static/vendor/` y genera el CSS minificado).
+`css:vigilar` recompila mientras se editan las plantillas. Antes de un commit: `npm run construir` (copia Alpine.js,
+Swiper y las letras a `static/` y genera el CSS minificado).
+
+## Fotos
+
+Las fotos que se suben al panel se guardan en WebP y en tres tamaños (480, 960 y 1600 px) para que cada pantalla
+descargue la que necesita. Si hay fotos subidas antes de esa función, `manage.py generar_tamanos` les crea las copias.
+
+## Para Google
+
+Cada página tiene su título y su descripción; Inicio y Contacto llevan los datos del negocio (schema.org/DaySpa).
+El mapa del sitio está en `/sitemap.xml` y las reglas para buscadores en `/robots.txt`.
 
 ## Documentación
 

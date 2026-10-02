@@ -6,6 +6,38 @@
 @import "tailwindcss" source(none);
 @source "../../templates";
 
+/* Letras servidas desde el propio sitio (Fontsource, licencia OFL), solo alfabeto latino: incluye tildes y ñ. */
+@font-face {
+  font-family: "Jost";
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/jost-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Jost";
+  font-weight: 500;
+  font-display: swap;
+  src: url("../fonts/jost-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-weight: 500;
+  font-display: swap;
+  src: url("../fonts/cormorant-garamond-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/cormorant-garamond-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Great Vibes";
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/great-vibes-latin-400-normal.woff2") format("woff2");
+}
+
 @theme {
   --color-primario: #a83a8c;
   --color-primario-oscuro: #5e1d4c;
@@ -19,8 +51,9 @@
   --color-texto: #2a1f27;
   --color-texto-2: #6b5a66;
   --color-borde: #eedce8;
-  --color-whatsapp: #1f8b4c;
-  --color-whatsapp-oscuro: #176d3b;
+  /* Verde de WhatsApp oscurecido: con texto blanco da 5,4 a 1 (AA pide 4,5) */
+  --color-whatsapp: #1a7a43;
+  --color-whatsapp-oscuro: #135c32;
 
   --font-titulo: "Cormorant Garamond", Georgia, serif;
   --font-texto: "Jost", system-ui, sans-serif;

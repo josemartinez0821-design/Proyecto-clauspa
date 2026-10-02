@@ -1,7 +1,7 @@
 {% extends "sitio/base.html" %}
+{% load spa %}
 
-{% block titulo %}Contacto · {{ negocio.nombre }}{% endblock %}
-{% block descripcion %}Dirección, horario, WhatsApp y teléfono de {{ negocio.nombre }}. Pide tu cita.{% endblock %}
+{% block cabeza %}{% datos_negocio %}{% endblock %}
 
 {% block contenido %}
   {% if negocio.barrio %}

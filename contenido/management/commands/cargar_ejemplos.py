@@ -8,6 +8,7 @@ Las fotos son imágenes generadas aquí mismo con los colores del logo y dicen "
 import calendar
 from datetime import time
 from io import BytesIO
+from pathlib import Path
 
 from django.conf import settings
 from django.core.files.base import ContentFile
@@ -69,12 +70,27 @@ def foto_de_ejemplo(colores, ancho, alto, titulo=None):
     return ContentFile(salida.getvalue(), name=f"{slugify(titulo or 'diapositiva')}.png")
 
 
+def foto_de_carpeta(ruta):
+    return ContentFile(ruta.read_bytes(), name=ruta.name)
+
+
 class Command(BaseCommand):
     help = "Carga los datos de ejemplo de Claudia Spa (solo en el PC de desarrollo)."
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--fotos",
+            type=Path,
+            help="Carpeta con fotos de referencia que reemplazan a las generadas: servicios/<slug>.jpg "
+            "(y <slug>-2.jpg…), slider/<número>.jpg y local/<número>.jpg. No se suben al repositorio.",
+        )
 
     def handle(self, *args, **options):
         if not settings.DEBUG:
             raise CommandError("Los datos de ejemplo son solo para el PC de desarrollo (DEBUG=True).")
+        self.carpeta = options.get("fotos")
+        if self.carpeta and not self.carpeta.is_dir():
+            raise CommandError(f"No existe la carpeta de fotos: {self.carpeta}")
         with transaction.atomic():
             self.servicios()
             self.diapositivas()
@@ -86,7 +102,14 @@ class Command(BaseCommand):
         for orden, datos in enumerate(ejemplos.SERVICIOS, start=1):
             datos = dict(datos)
             servicio, _ = Servicio.objects.update_or_create(slug=datos.pop("slug"), defaults={**datos, "orden": orden})
-            if not servicio.fotos.exists():
+            reales = self.buscar("servicios", f"{servicio.slug}.jpg", f"{servicio.slug}-[0-9].jpg")
+            if reales:
+                servicio.fotos.all().delete()  # sus archivos se borran solos (contenido/imagenes.py)
+                for numero, ruta in enumerate(reales):
+                    servicio.fotos.create(
+                        imagen=foto_de_carpeta(ruta), texto_alternativo=f"{servicio.nombre} (foto de referencia)", orden=numero
+                    )
+            elif not servicio.fotos.exists():
                 servicio.fotos.create(
                     imagen=foto_de_ejemplo(COLORES[servicio.categoria], 1600, 1200, servicio.nombre),
                     texto_alternativo=f"{servicio.nombre} (foto de ejemplo)",
@@ -105,7 +128,11 @@ class Command(BaseCommand):
             diapositiva, _ = Diapositiva.objects.update_or_create(
                 titulo=datos.pop("titulo"), defaults={**datos, "orden": orden}
             )
-            if not diapositiva.imagen:
+            real = self.buscar("slider", f"{orden}.jpg")
+            if real:
+                diapositiva.imagen = ContentFile(real[0].read_bytes(), name=f"{slugify(diapositiva.titulo)}.jpg")
+                diapositiva.save()
+            elif not diapositiva.imagen:
                 diapositiva.imagen = foto_de_ejemplo(COLORES["slider"], 2400, 1000)
                 diapositiva.save()
         activas = Diapositiva.objects.filter(activa=True).count()
@@ -134,7 +161,14 @@ class Command(BaseCommand):
                 negocio.horarios.create(
                     dia_semana=dia, hora_apertura=time.fromisoformat(abre), hora_cierre=time.fromisoformat(cierra)
                 )
-        if not negocio.fotos_local.exists():
+        reales = self.buscar("local", *(f"{numero}.jpg" for numero in range(1, len(ejemplos.FOTOS_LOCAL) + 1)))
+        if reales:
+            negocio.fotos_local.all().delete()
+            for orden, (ruta, descripcion) in enumerate(zip(reales, ejemplos.FOTOS_LOCAL), start=1):
+                negocio.fotos_local.create(
+                    imagen=foto_de_carpeta(ruta), texto_alternativo=f"{descripcion} (foto de referencia)", orden=orden
+                )
+        elif not negocio.fotos_local.exists():
             for orden, descripcion in enumerate(ejemplos.FOTOS_LOCAL, start=1):
                 negocio.fotos_local.create(
                     imagen=foto_de_ejemplo(COLORES["local"], 1600, 1200, descripcion),
@@ -144,3 +178,12 @@ class Command(BaseCommand):
         self.stdout.write(
             f"Horario: {negocio.horarios.count()} franjas · Fotos del spa: {negocio.fotos_local.count()}"
         )
+
+    def buscar(self, subcarpeta, *patrones):
+        """Fotos de la carpeta --fotos que coinciden con los patrones, en orden (vacío si no se dio carpeta)."""
+        if not self.carpeta:
+            return []
+        encontradas = []
+        for patron in patrones:
+            encontradas += sorted((self.carpeta / subcarpeta).glob(patron))
+        return encontradas

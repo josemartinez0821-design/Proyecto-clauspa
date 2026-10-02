@@ -1,7 +1,10 @@
 {% extends "sitio/base.html" %}
 {% load static spa %}
 
-{% block cabeza %}<link rel="stylesheet" href="{% static 'vendor/swiper-bundle.min.css' %}">{% endblock %}
+{% block cabeza %}
+  <link rel="stylesheet" href="{% static 'vendor/swiper-bundle.min.css' %}">
+  {% datos_negocio %}
+{% endblock %}
 
 {% block contenido %}
 <h1 class="sr-only">{{ negocio.nombre }} · {{ negocio.lema }}</h1>
@@ -12,7 +15,8 @@
     <div class="swiper-wrapper">
       {% for diapositiva in diapositivas %}
         <div class="swiper-slide">
-          <img src="{{ diapositiva.imagen.url }}" alt="" class="absolute inset-0 size-full object-cover"
+          <img src="{{ diapositiva.imagen.url }}" srcset="{{ diapositiva.imagen|srcset:2400 }}" sizes="100vw" alt=""
+               class="absolute inset-0 size-full object-cover"
                {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}>
           <div class="absolute inset-0 bg-linear-to-r from-black/60 via-black/35 to-black/5" aria-hidden="true"></div>
           <div class="contenedor relative flex h-full items-center pb-10">
@@ -95,7 +99,7 @@
         {% for equipo in tecnologia %}
           <article class="rounded-[20px] bg-fondo p-[26px]">
             {% if equipo.foto %}
-              <img src="{{ equipo.foto.url }}" alt="" loading="lazy" class="mb-3.5 size-[52px] rounded-full object-cover">
+              <img src="{{ equipo.foto.url }}" srcset="{{ equipo.foto|srcset:1200 }}" sizes="52px" alt="" loading="lazy" class="mb-3.5 size-[52px] rounded-full object-cover">
             {% else %}
               <div class="mb-3.5 flex size-[52px] items-center justify-center rounded-full bg-azul text-white">
                 <svg class="icono" aria-hidden="true"><use href="#{% cycle 'i-gota' 'i-luz' 'i-chispa' %}"/></svg>
@@ -116,7 +120,8 @@
     <div class="contenedor grid items-center gap-12 md:grid-cols-[1fr_1.1fr]">
       <div class="aspect-[4/5] overflow-hidden rounded-3xl bg-suave">
         {% if negocio.foto_duena %}
-          <img src="{{ negocio.foto_duena.url }}" alt="{{ negocio.nombre }}" loading="lazy" class="size-full object-cover">
+          <img src="{{ negocio.foto_duena.url }}" srcset="{{ negocio.foto_duena|srcset:1200 }}" sizes="(min-width: 768px) 45vw, 92vw"
+               alt="{{ negocio.nombre }}" loading="lazy" class="size-full object-cover">
         {% else %}
           <span class="flex size-full items-center justify-center text-primario"><svg class="icono size-16 stroke-[1.2]" aria-hidden="true"><use href="#i-usuario"/></svg></span>
         {% endif %}

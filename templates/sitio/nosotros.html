@@ -1,7 +1,5 @@
 {% extends "sitio/base.html" %}
-
-{% block titulo %}Nosotros · {{ negocio.nombre }}{% endblock %}
-{% block descripcion %}Conoce {{ negocio.nombre }}: atención personalizada en tratamientos faciales y corporales.{% endblock %}
+{% load spa %}
 
 {% block contenido %}
   {% include "sitio/partes/cabecera_pagina.html" with titulo="Nosotros" texto="Conoce a quien cuida de ti." %}
@@ -10,7 +8,8 @@
     <div class="contenedor grid items-center gap-12 md:grid-cols-[1fr_1.1fr]">
       <div class="aspect-[4/5] overflow-hidden rounded-3xl bg-suave">
         {% if negocio.foto_duena %}
-          <img src="{{ negocio.foto_duena.url }}" alt="{{ negocio.nombre }}" class="size-full object-cover">
+          <img src="{{ negocio.foto_duena.url }}" srcset="{{ negocio.foto_duena|srcset:1200 }}" sizes="(min-width: 768px) 45vw, 92vw"
+               alt="{{ negocio.nombre }}" class="size-full object-cover">
         {% else %}
           <span class="flex size-full items-center justify-center text-primario"><svg class="icono size-16 stroke-[1.2]" aria-hidden="true"><use href="#i-usuario"/></svg></span>
         {% endif %}
@@ -48,7 +47,8 @@
         </div>
         <div class="grid gap-[18px] sm:grid-cols-3">
           {% for foto in fotos %}
-            <img src="{{ foto.imagen.url }}" alt="{{ foto.texto_alternativo }}" loading="lazy" class="aspect-[4/3] w-full rounded-[20px] object-cover">
+            <img src="{{ foto.imagen.url }}" srcset="{{ foto.imagen|srcset:1600 }}" sizes="(min-width: 640px) 33vw, 92vw"
+                 alt="{{ foto.texto_alternativo }}" loading="lazy" class="aspect-[4/3] w-full rounded-[20px] object-cover">
           {% endfor %}
         </div>
       </div>

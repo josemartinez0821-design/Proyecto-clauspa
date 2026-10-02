@@ -1,7 +1,10 @@
+import json
+import re
 import shutil
 import tempfile
 from datetime import date, time, timedelta
 from io import BytesIO, StringIO
+from pathlib import Path
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -14,9 +17,11 @@ from django.utils import timezone
 from PIL import Image
 
 from servicios.models import FotoServicio, Servicio
+from servicios.templatetags.spa import _variantes_existentes, srcset
 
 from .admin import HorarioFormSet
 from .horario import hora_texto, resumir_horario
+from .imagenes import nombre_variante
 from .models import Diapositiva, FotoLocal, HorarioAtencion, Negocio, PreguntaFrecuente, Tecnologia, solo_digitos
 
 
@@ -38,6 +43,9 @@ class ConMediaTemporal(TestCase):
 
 
 class Fotos(ConMediaTemporal):
+    def setUp(self):
+        _variantes_existentes.clear()  # cada prueba revisa el disco de nuevo
+
     def test_la_foto_se_reduce_y_se_guarda_en_webp(self):
         foto = FotoLocal.objects.create(negocio=Negocio.cargar(), imagen=foto_png(), texto_alternativo="Sala")
         self.assertTrue(foto.imagen.name.startswith("local/foto-del-spa"))
@@ -52,6 +60,46 @@ class Fotos(ConMediaTemporal):
         foto.texto_alternativo = "Sala de espera"
         foto.save()
         self.assertEqual(foto.imagen.name, nombre)
+
+    def test_se_guardan_copias_pequenas_para_cada_pantalla(self):
+        foto = FotoLocal.objects.create(negocio=Negocio.cargar(), imagen=foto_png(), texto_alternativo="Sala")
+        for ancho in (480, 960):
+            with Image.open(foto.imagen.storage.path(nombre_variante(foto.imagen.name, ancho))) as copia:
+                self.assertEqual(copia.width, ancho)
+        # Con lado máximo 1600, la copia de 1600 no hace falta: la foto principal ya mide eso.
+        self.assertFalse(foto.imagen.storage.exists(nombre_variante(foto.imagen.name, 1600)))
+        self.assertEqual(
+            srcset(foto.imagen, 1600),
+            f"{foto.imagen.url[:-5]}-480.webp 480w, {foto.imagen.url[:-5]}-960.webp 960w, {foto.imagen.url} 1600w",
+        )
+
+    def test_srcset_no_usa_copias_que_no_existen(self):
+        foto = FotoLocal.objects.create(negocio=Negocio.cargar(), imagen=foto_png(), texto_alternativo="Sala")
+        foto.imagen.storage.delete(nombre_variante(foto.imagen.name, 480))
+        self.assertNotIn("-480.webp", srcset(foto.imagen, 1600))
+        self.assertIn("-960.webp 960w", srcset(foto.imagen, 1600))
+
+    def test_al_cambiar_o_borrar_una_foto_se_borran_sus_archivos(self):
+        foto = FotoLocal.objects.create(negocio=Negocio.cargar(), imagen=foto_png(), texto_alternativo="Sala")
+        storage, primera = foto.imagen.storage, foto.imagen.name
+        with self.captureOnCommitCallbacks(execute=True):
+            foto.imagen = foto_png(800, 600)
+            foto.save()
+        self.assertFalse(storage.exists(primera))
+        self.assertFalse(storage.exists(nombre_variante(primera, 480)))
+        segunda = foto.imagen.name
+        self.assertTrue(storage.exists(segunda))
+        with self.captureOnCommitCallbacks(execute=True):
+            foto.delete()
+        self.assertFalse(storage.exists(segunda))
+        self.assertFalse(storage.exists(nombre_variante(segunda, 480)))
+
+    def test_generar_tamanos_completa_las_copias_que_falten(self):
+        foto = FotoLocal.objects.create(negocio=Negocio.cargar(), imagen=foto_png(), texto_alternativo="Sala")
+        copia = nombre_variante(foto.imagen.name, 960)
+        foto.imagen.storage.delete(copia)
+        call_command("generar_tamanos", stdout=StringIO())
+        self.assertTrue(foto.imagen.storage.exists(copia))
 
 
 @override_settings(DEBUG=True)
@@ -82,6 +130,19 @@ class DatosDeEjemplo(ConMediaTemporal):
             self.assertTrue(diapositiva.imagen.name.endswith(".webp"))
         for franja in HorarioAtencion.objects.all():
             franja.full_clean()
+
+    def test_fotos_de_referencia_desde_una_carpeta(self):
+        carpeta = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, carpeta, True)
+        for archivo in ("servicios/masaje-relajante.jpg", "servicios/masaje-relajante-2.jpg", "slider/1.jpg"):
+            (carpeta / archivo).parent.mkdir(exist_ok=True)
+            Image.new("RGB", (1200, 800), "#5D7FCD").save(carpeta / archivo, "JPEG")
+        call_command("cargar_ejemplos", fotos=carpeta, stdout=StringIO())
+        masaje = Servicio.objects.get(slug="masaje-relajante")
+        self.assertEqual(masaje.fotos.count(), 2)
+        self.assertIn("foto de referencia", masaje.fotos.first().texto_alternativo)
+        self.assertEqual(Servicio.objects.get(slug="depilacion-laser").fotos.count(), 1)  # sin foto real: la generada
+        self.assertTrue(Diapositiva.objects.get(orden=1).imagen.name.startswith("slider/tu-piel-renovada"))
 
     @override_settings(DEBUG=False)
     def test_no_se_carga_en_el_servidor(self):
@@ -282,6 +343,62 @@ class OtrasPaginas(TestCase):
         self.assertEqual(respuesta.status_code, 404)
         self.assertContains(respuesta, "No encontramos esta página", status_code=404)
         self.assertContains(respuesta, "Volver al inicio", status_code=404)
+
+
+class Buscadores(TestCase):
+    """Lo que leen Google y las redes cuando alguien comparte la página."""
+
+    def test_cada_pagina_tiene_su_titulo_y_descripcion(self):
+        crear_servicio()
+        casos = {
+            reverse("inicio"): "<title>Claudia Spa · Relajación y belleza</title>",
+            reverse("faciales"): "<title>Faciales · Claudia Spa</title>",
+            "/corporales/masaje-relajante/": "<title>Masaje relajante · Claudia Spa</title>",
+            reverse("contacto"): "<title>Contacto · Claudia Spa</title>",
+        }
+        for url, titulo in casos.items():
+            respuesta = self.client.get(url)
+            self.assertContains(respuesta, titulo, html=False)
+            self.assertContains(respuesta, f'<link rel="canonical" href="http://testserver{url}">')
+            self.assertContains(respuesta, '<meta property="og:image"')
+        self.assertContains(self.client.get("/corporales/masaje-relajante/"), 'content="Breve. Aprox. 50 a 60 min. $70.000."')
+
+    def test_datos_del_negocio_para_google(self):
+        negocio = Negocio.cargar()
+        negocio.direccion, negocio.barrio, negocio.telefono = "Carrera 9 # 9A-21", "Canadá", "3001234567"
+        negocio.save()
+        negocio.horarios.create(dia_semana=6, hora_apertura=time(9), hora_cierre=time(13))
+        respuesta = self.client.get(reverse("contacto")).content.decode()
+        datos = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', respuesta).group(1))
+        self.assertEqual(datos["@type"], "DaySpa")
+        self.assertEqual(datos["telephone"], "+573001234567")
+        self.assertEqual(datos["address"]["streetAddress"], "Carrera 9 # 9A-21, Barrio Canadá")
+        self.assertEqual(datos["openingHoursSpecification"][0]["dayOfWeek"], "https://schema.org/Saturday")
+
+    def test_un_texto_del_panel_no_puede_romper_los_datos(self):
+        negocio = Negocio.cargar()
+        negocio.lema = "</script><script>alert(1)</script>"
+        negocio.save()
+        self.assertNotContains(self.client.get(reverse("inicio")), "</script><script>alert(1)")
+
+    def test_mapa_del_sitio_y_robots(self):
+        crear_servicio()
+        crear_servicio(nombre="Oculto", slug="oculto", visible=False)
+        mapa = self.client.get("/sitemap.xml").content.decode()
+        self.assertIn("http://testserver/corporales/masaje-relajante/", mapa)
+        self.assertIn("http://testserver/contacto/", mapa)
+        self.assertNotIn("oculto", mapa)
+        robots = self.client.get("/robots.txt").content.decode()
+        self.assertIn("Disallow: /panel/", robots)
+        self.assertIn("Sitemap: http://testserver/sitemap.xml", robots)
+
+    def test_las_letras_salen_del_propio_sitio(self):
+        respuesta = self.client.get(reverse("inicio"))
+        self.assertNotContains(respuesta, "fonts.googleapis.com")
+        self.assertContains(respuesta, "/static/fonts/jost-latin-400-normal.woff2")
+
+    def test_la_pagina_no_encontrada_no_se_indexa(self):
+        self.assertContains(self.client.get("/no-existe/"), '<meta name="robots" content="noindex">', status_code=404)
 
 
 class Slider(TestCase):

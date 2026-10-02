@@ -1,7 +1,10 @@
 {% extends "sitio/base.html" %}
 {% comment %}Página no encontrada (S-16). Django la usa sola cuando DEBUG=False.{% endcomment %}
 
-{% block titulo %}Página no encontrada · {{ negocio.nombre }}{% endblock %}
+{% block meta %}
+  <title>Página no encontrada · {{ negocio.nombre }}</title>
+  <meta name="robots" content="noindex">
+{% endblock %}
 
 {% block contenido %}
   <section class="py-24 text-center">

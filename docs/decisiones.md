@@ -52,6 +52,11 @@ para que ella cambie servicios, precios, fotos y textos sin ayuda. Las citas se 
 | 01/10/2026 | Nosotros muestra "años de experiencia" (campo opcional del panel) y "1 a 1, atención personalizada" |
 | 01/10/2026 | El mapa de Contacto aparece solo cuando hay ciudad (sin ella, Google pondría el pin en otro barrio Canadá); "Cómo llegar" usa el enlace de Google Maps del panel o la dirección |
 | 01/10/2026 | Aviso de privacidad con un texto base para la fase 1 (sin formularios); conviene que lo revise alguien que sepa de la Ley 1581 antes de publicar, y se actualiza en la fase 2 |
+| 01/10/2026 | Fotos de referencia de Unsplash (licencia libre) mientras llegan las reales: viven fuera del repositorio (`D:\Proyecto_nuevo\fotos-ejemplo`, con `CREDITOS.md`) y se cargan con `cargar_ejemplos --fotos`. **Nunca** una foto de banco como si fuera la dueña; antes de publicar se cambian por fotos reales |
+| 01/10/2026 | Cada foto se guarda también en 480, 960 y 1600 px (srcset); al cambiarla o borrarla se borran sus archivos. `manage.py generar_tamanos` completa las copias de fotos antiguas |
+| 01/10/2026 | Letras servidas desde el propio sitio (Fontsource, OFL): sin Google Fonts, más rápido y sin enviar datos a Google |
+| 01/10/2026 | SEO: título, descripción, dirección canónica y Open Graph por página; datos del negocio para Google (schema.org/DaySpa) en Inicio y Contacto; `sitemap.xml` y `robots.txt` |
+| 01/10/2026 | Accesibilidad revisada con axe (WCAG 2.1 AA): sin errores en las 6 páginas, en computador y celular. El verde de WhatsApp se oscureció a `#1A7A43` para cumplir el contraste |
 
 ## Lo que NO hace (por ahora)
 
@@ -68,7 +73,7 @@ aplicación para instalar y ficha clínica (datos de salud sensibles).
 - **Colores del logo:** fucsia `#C749A7`, verde `#67B022`, azul `#5D7FCD`. Para que el texto se lea bien se usan tonos
   más oscuros: primario `#A83A8C`, primario oscuro `#5E1D4C`, verde `#3F7A12` / `#4F8F1C` / `#A6D96A` (sobre fondo
   oscuro), azul `#3F63B5`, fondo `#FFFAFC`, suave `#F8EAF3`, texto `#2A1F27`, texto secundario `#6B5A66`,
-  borde `#EEDCE8`.
+  borde `#EEDCE8`, botones de WhatsApp `#1A7A43`.
 - **Panel (Unfold):** escala primaria en OKLCH con tono 339.3; el 600 es `#A83A8C` (ver `config/settings.py`).
 - **Tipografías:** Cormorant Garamond (títulos), Jost (texto), Great Vibes ("Claudia" del logo de texto).
 - **Menú:** Inicio · Faciales · Corporales · Nosotros · Contacto. En el celular, botón ☰. WhatsApp flotante siempre
@@ -96,8 +101,8 @@ aplicación para instalar y ficha clínica (datos de salud sensibles).
 | 3. Datos de ejemplo | Los 8 servicios con descripción y cuidados completos, el slider, la tecnología, las preguntas y el horario | ✅ Lista (01/10/2026) |
 | 4. El diseño | Tailwind, plantilla base, encabezado, pie y WhatsApp flotante | ✅ Lista (01/10/2026) |
 | 5. Las páginas | Inicio, Faciales, Corporales, detalle, Nosotros, Contacto, aviso de privacidad, 404 | ✅ Lista (01/10/2026) |
-| 6. Calidad | Fotos en varios tamaños, letras desde el propio sitio, Google (SEO), accesibilidad, pruebas en computador y celular | Siguiente |
-| 7. Prueba con la dueña | Ajustes y publicación | |
+| 6. Calidad | Fotos en varios tamaños, letras desde el propio sitio, Google (SEO), accesibilidad, pruebas en computador y celular | ✅ Lista (01/10/2026) |
+| 7. Prueba con la dueña | Cuenta de la dueña, datos y fotos reales, ajustes, hosting, dominio y publicación (con PageSpeed real) | Siguiente |
 | Fase 2 | Agenda en línea | |
 
 ## Servicios de ejemplo (precios y duraciones inventados)
@@ -124,7 +129,8 @@ hidratación con velo, máscara LED, masaje manual y bloqueador.
 
 - Lista real de servicios con precios y duraciones (una foto de la lista sirve).
 - Número de WhatsApp, teléfono, enlace de Facebook, ciudad y si el spa aparece en Google Maps.
-- Fotos del spa (local, procedimientos, antes y después con permiso escrito) para el slider y las páginas.
+- Fotos del spa (local, procedimientos, antes y después con permiso escrito) para el slider y las páginas, y una foto
+  de la dueña para Nosotros. Las de referencia de Unsplash se reemplazan antes de publicar.
 - Archivo original del logo (PNG con fondo transparente o SVG).
 - **Permisos de salud** para anunciar el plasma rico en plaquetas y la depilación láser.
 - Cuidados reales antes y después de cada servicio, y los casos de "Avísanos antes si…" (los de ejemplo los escribe

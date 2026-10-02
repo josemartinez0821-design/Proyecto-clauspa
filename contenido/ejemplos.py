@@ -368,4 +368,4 @@ NOSOTROS_TEXTO = """En Claudia Spa cada tratamiento se adapta a tu piel y a tu c
 
 Un espacio tranquilo, limpio y pensado para que te tomes un tiempo para ti."""
 
-FOTOS_LOCAL = ["Recepción del spa", "Cabina de tratamientos", "Equipos de aparatología"]
+FOTOS_LOCAL = ["Cabina de tratamientos", "Sala de atención", "Productos para el cuidado de la piel"]

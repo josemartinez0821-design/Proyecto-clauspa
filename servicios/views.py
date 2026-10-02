@@ -17,7 +17,17 @@ def visibles():
 def categoria(request, categoria):
     titulo, texto = CATEGORIAS[categoria]
     servicios = visibles().filter(categoria=categoria)
-    return render(request, "sitio/categoria.html", {"titulo": titulo, "texto": texto, "servicios": servicios})
+    return render(
+        request,
+        "sitio/categoria.html",
+        {
+            "titulo": titulo,
+            "texto": texto,
+            "servicios": servicios,
+            "seo_titulo": titulo,
+            "seo_descripcion": f"{texto} Precios y duraciones aproximadas. Pide tu cita por WhatsApp.",
+        },
+    )
 
 
 def detalle(request, categoria, slug):
@@ -26,6 +36,8 @@ def detalle(request, categoria, slug):
         # Si llegan con la categoría equivocada (por ejemplo /corporales/limpieza…/), van a la dirección correcta.
         return redirect(servicio, permanent=True)
     relacionados = visibles().filter(categoria=categoria).exclude(pk=servicio.pk)[:3]
+    precio = f"{servicio.precio_texto} {servicio.sufijo_precio}".strip()
+    foto = servicio.foto_principal
     return render(
         request,
         "sitio/detalle.html",
@@ -36,5 +48,8 @@ def detalle(request, categoria, slug):
             "relacionados": relacionados,
             "nota_despues": "Además, te damos indicaciones personalizadas según "
             + ("tu tipo de piel." if categoria == Servicio.Categoria.FACIAL else "tu caso."),
+            "seo_titulo": servicio.nombre,
+            "seo_descripcion": f"{servicio.descripcion_breve} Aprox. {servicio.duracion_texto}. {precio}.",
+            "seo_imagen": foto.imagen.url if foto else "",
         },
     )

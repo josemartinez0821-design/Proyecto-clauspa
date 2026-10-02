@@ -3,9 +3,11 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path
 
 from contenido import views as contenido
+from contenido.sitemaps import SITEMAPS
 from servicios import views as servicios
 from servicios.models import Servicio
 
@@ -23,6 +25,9 @@ urlpatterns = [
     path("nosotros/", contenido.nosotros, name="nosotros"),
     path("contacto/", contenido.contacto, name="contacto"),
     path("aviso-de-privacidad/", contenido.privacidad, name="privacidad"),
+    # Para Google
+    path("sitemap.xml", sitemap, {"sitemaps": SITEMAPS}, name="django.contrib.sitemaps.views.sitemap"),
+    path("robots.txt", contenido.robots, name="robots"),
 ]
 
 if settings.DEBUG:

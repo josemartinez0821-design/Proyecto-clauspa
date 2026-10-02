@@ -1,9 +1,6 @@
 {% extends "sitio/base.html" %}
 {% load spa %}
 
-{% block titulo %}{{ servicio.nombre }} · {{ negocio.nombre }}{% endblock %}
-{% block descripcion %}{{ servicio.descripcion_breve }} Aprox. {{ servicio.duracion_texto }}. {{ servicio.precio_texto }}.{% endblock %}
-
 {% block contenido %}
 <div class="contenedor">
   <p class="pt-[22px] text-sm text-texto-2">
@@ -18,8 +15,9 @@
     <div x-data="{ actual: 0 }" class="lg:sticky lg:top-[92px] lg:self-start">
       <div class="relative aspect-square overflow-hidden rounded-3xl bg-suave">
         {% for foto in fotos %}
-          <img src="{{ foto.imagen.url }}" alt="{{ foto.texto_alternativo }}" class="absolute inset-0 size-full object-cover"
-               x-show="actual === {{ forloop.counter0 }}"{% if not forloop.first %} x-cloak loading="lazy"{% endif %}>
+          <img src="{{ foto.imagen.url }}" srcset="{{ foto.imagen|srcset:1600 }}" sizes="(min-width: 1140px) 570px, (min-width: 1024px) 50vw, 92vw"
+               alt="{{ foto.texto_alternativo }}" class="absolute inset-0 size-full object-cover"
+               x-show="actual === {{ forloop.counter0 }}"{% if forloop.first %} fetchpriority="high"{% else %} x-cloak loading="lazy"{% endif %}>
         {% empty %}
           {% include "sitio/partes/foto_servicio.html" with foto=None %}
         {% endfor %}
@@ -31,7 +29,7 @@
             <button type="button" class="aspect-square overflow-hidden rounded-xl ring-primario ring-offset-2"
                     :class="actual === {{ forloop.counter0 }} && 'ring-2'" @click="actual = {{ forloop.counter0 }}"
                     aria-label="Ver foto {{ forloop.counter }}: {{ foto.texto_alternativo }}">
-              <img src="{{ foto.imagen.url }}" alt="" loading="lazy" class="size-full object-cover">
+              <img src="{{ foto.imagen.url }}" srcset="{{ foto.imagen|srcset:1600 }}" sizes="140px" alt="" loading="lazy" class="size-full object-cover">
             </button>
           {% endfor %}
         </div>

@@ -3,12 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block titulo %}{{ negocio.nombre }} · {{ negocio.lema }}{% endblock %}</title>
-  <meta name="description" content="{% block descripcion %}{{ negocio.nombre }}: tratamientos faciales y corporales con atención personalizada. Pide tu cita por WhatsApp.{% endblock %}">
+  {% block meta %}{% include "sitio/partes/meta.html" %}{% endblock %}
   <link rel="icon" href="{% static 'img/logo-simbolo.png' %}">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Great+Vibes&family=Jost:wght@400;500&display=swap">
+  {# Las dos letras que se ven primero (texto y títulos) se piden de una vez #}
+  <link rel="preload" href="{% static 'fonts/jost-latin-400-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{% static 'fonts/cormorant-garamond-latin-600-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
   {# Primero los estilos de cada página (por ejemplo, Swiper) y después los del sitio, que pueden ajustarlos #}
   {% block cabeza %}{% endblock %}
   <link rel="stylesheet" href="{% static 'css/sitio.css' %}">

@@ -1,0 +1,17 @@
+{% load static %}
+{% comment %}
+Título, descripción y datos para Google y para cuando alguien comparte la página (WhatsApp, Facebook).
+Las vistas pueden pasar seo_titulo ("Faciales"), seo_descripcion y seo_imagen (dirección de una foto).
+{% endcomment %}
+{% with url=request.scheme|add:"://"|add:request.get_host|add:request.path %}
+<title>{% if seo_titulo %}{{ seo_titulo }} · {{ negocio.nombre }}{% else %}{{ negocio.nombre }} · {{ negocio.lema }}{% endif %}</title>
+<meta name="description" content="{% if seo_descripcion %}{{ seo_descripcion }}{% else %}{{ negocio.nombre }}: tratamientos faciales y corporales con atención personalizada. Pide tu cita por WhatsApp.{% endif %}">
+<link rel="canonical" href="{{ url }}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_CO">
+<meta property="og:site_name" content="{{ negocio.nombre }}">
+<meta property="og:url" content="{{ url }}">
+<meta property="og:title" content="{% if seo_titulo %}{{ seo_titulo }} · {{ negocio.nombre }}{% else %}{{ negocio.nombre }} · {{ negocio.lema }}{% endif %}">
+<meta property="og:description" content="{% if seo_descripcion %}{{ seo_descripcion }}{% else %}Tratamientos faciales y corporales con atención personalizada.{% endif %}">
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% if seo_imagen %}{{ seo_imagen }}{% else %}{% static 'img/logo-circulo.png' %}{% endif %}">
+{% endwith %}
