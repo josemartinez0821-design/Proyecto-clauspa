@@ -1,0 +1,10 @@
+.env
+bd/crear_base.sql
+.venv/
+__pycache__/
+*.pyc
+media/
+staticfiles/
+
+# Respuestas de la dueña a la entrevista: se quedan en el PC (el repositorio es público).
+docs/entrevista-duena.md
