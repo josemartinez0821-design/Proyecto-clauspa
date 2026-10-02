@@ -1,6 +1,6 @@
 # Decisiones del proyecto Claudia Spa
 
-Registro de lo decidido con el usuario (Jose Miguel, hijo de la dueña). Actualizado el 29/09/2026.
+Registro de lo decidido con el usuario (Jose Miguel, hijo de la dueña). Actualizado el 01/10/2026.
 
 ## Qué es
 
@@ -36,6 +36,10 @@ para que ella cambie servicios, precios, fotos y textos sin ayuda. Las citas se 
 | 29/09/2026 | La recuperación de contraseña del panel llega al correo del hijo (la mamá no usa Gmail) |
 | 29/09/2026 | Sección "Tecnología" en Inicio (hidrafacial, máscara LED, aparatología) |
 | 29/09/2026 | Aviso "llegar 10 minutos antes" en confirmaciones y recordatorios (a la dueña le estresa la impuntualidad) |
+| 01/10/2026 | Git con un commit por etapa; repositorio público `josemartinez0821-design/Proyecto-clauspa`. Las respuestas de la entrevista a la dueña no se suben |
+| 01/10/2026 | Detalle de servicio más completo (idea del usuario): descripción en párrafos, "Ideal para" y "Avísanos antes si…" (casos en que la persona debe avisar antes, como embarazo o alergias), además de los cuidados antes y después |
+| 01/10/2026 | Las fotos se convierten a WebP y se reducen al subirlas (no en la etapa 6) |
+| 01/10/2026 | Textos de Unfold traducidos con un catálogo propio (`locale/`), compilado con `manage.py compilar_traducciones` porque Windows no trae msgfmt |
 
 ## Lo que NO hace (por ahora)
 
@@ -76,8 +80,8 @@ aplicación para instalar y ficha clínica (datos de salud sensibles).
 | Etapa | Contenido | Estado |
 |---|---|---|
 | 1. La base | Django + MariaDB + panel en /panel/ | ✅ Lista (29/09/2026) |
-| 2. Las tablas | Modelos de la fase 1, panel con sus secciones, traducir Unfold al español | Siguiente |
-| 3. Datos de ejemplo | Los 8 servicios, el slider, la tecnología, las preguntas y el horario | |
+| 2. Las tablas | Modelos de la fase 1, panel con sus secciones, traducir Unfold al español | ✅ Lista (01/10/2026) |
+| 3. Datos de ejemplo | Los 8 servicios con descripción y cuidados completos, el slider, la tecnología, las preguntas y el horario | Siguiente |
 | 4. El diseño | Tailwind, plantilla base, encabezado, pie y WhatsApp flotante | |
 | 5. Las páginas | Inicio, Faciales, Corporales, detalle, Nosotros, Contacto, aviso de privacidad, 404 | |
 | 6. Calidad | Fotos WebP, Google (SEO), pruebas en computador y celular | |
@@ -108,6 +112,6 @@ hidratación con velo, máscara LED, masaje manual y bloqueador.
 - Fotos del spa (local, procedimientos, antes y después con permiso escrito) para el slider y las páginas.
 - Archivo original del logo (PNG con fondo transparente o SVG).
 - **Permisos de salud** para anunciar el plasma rico en plaquetas y la depilación láser.
-- Cuidados reales antes y después de cada servicio (los del boceto son de ejemplo).
-- Si se usa Git para guardar el historial del código (el usuario todavía no respondió).
+- Cuidados reales antes y después de cada servicio, y los casos de "Avísanos antes si…" (los de ejemplo los escribe
+  Claude; la dueña debe revisarlos, sobre todo los del plasma y el láser).
 - Hosting y dominio: se cotizan antes de publicar.

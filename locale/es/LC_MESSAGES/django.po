@@ -1,0 +1,223 @@
+# Textos de django-unfold que Django no trae traducidos al español.
+# Unfold 0.108 no incluye traducciones; los demás textos del panel los traduce Django.
+# Después de editar este archivo: python manage.py compilar_traducciones
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Inicio de sesión y salida
+msgid "Welcome back to"
+msgstr "Te damos la bienvenida a"
+
+msgid "Return to site"
+msgstr "Volver a la página"
+
+msgid "Forgotten your password or username?"
+msgstr "¿Olvidaste tu contraseña o tu usuario?"
+
+msgid "Toggle password visibility"
+msgstr "Mostrar u ocultar la contraseña"
+
+msgid "You have been successfully logged out from the administration"
+msgstr "Cerraste sesión en el panel."
+
+msgid "Welcome"
+msgstr "Hola,"
+
+# Menú, tema y navegación
+msgid "All applications"
+msgstr "Todas las secciones"
+
+msgid "Search apps and models..."
+msgstr "Buscar secciones…"
+
+msgid "Models in the %(name)s application"
+msgstr "Secciones de %(name)s"
+
+msgid "Dark"
+msgstr "Oscuro"
+
+msgid "Light"
+msgstr "Claro"
+
+msgid "System"
+msgstr "Según el equipo"
+
+msgid "Go back"
+msgstr "Volver"
+
+msgid "General"
+msgstr "General"
+
+msgid "Previous"
+msgstr "Anterior"
+
+msgid "Next"
+msgstr "Siguiente"
+
+# Listas
+msgid "No results found"
+msgstr "No hay resultados"
+
+msgid "This page yielded into no results. Create a new item or reset your filters."
+msgstr "No hay nada para mostrar. Agrega uno nuevo o quita los filtros."
+
+msgid "Reset filters"
+msgstr "Quitar filtros"
+
+msgid "Filters"
+msgstr "Filtros"
+
+msgid "Apply Filters"
+msgstr "Aplicar filtros"
+
+msgid "Type to search"
+msgstr "Escribe para buscar"
+
+msgid "Select action"
+msgstr "Elige una acción"
+
+msgid "Select action to run"
+msgstr "Elige una acción"
+
+msgid "Run"
+msgstr "Aplicar"
+
+msgid "Run the selected action"
+msgstr "Aplicar la acción elegida"
+
+msgid "Click here to select the objects across all pages"
+msgstr "Seleccionar también los de las demás páginas"
+
+msgid "No data"
+msgstr "Sin datos"
+
+msgid "True"
+msgstr "Sí"
+
+msgid "False"
+msgstr "No"
+
+# Formularios
+msgid "Choose file to upload"
+msgstr "Elegir archivo"
+
+msgid "Image preview"
+msgstr "Vista previa de la imagen"
+
+msgid "Click to download"
+msgstr "Clic para descargar"
+
+msgid "Record picture"
+msgstr "Foto"
+
+msgid "This item will be deleted."
+msgstr "Este elemento se borrará al guardar."
+
+msgid "Click to cancel"
+msgstr "Clic para no borrarlo"
+
+msgid "Add row"
+msgstr "Agregar fila"
+
+msgid "Select record"
+msgstr "Elige un elemento"
+
+msgid "Select value"
+msgstr "Elige un valor"
+
+msgid "Select currency"
+msgstr "Elige la moneda"
+
+msgid "Date"
+msgstr "Fecha"
+
+msgid "Submit"
+msgstr "Enviar"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "After you've created a user, you’ll be able to edit more user options."
+msgstr "Después de crear el usuario podrás editar más opciones."
+
+msgid "You can not create nested object without parent"
+msgstr "No se puede crear este elemento sin el elemento al que pertenece."
+
+msgid "Dataset not found. No action performed."
+msgstr "No se encontraron los datos. No se hizo ningún cambio."
+
+# Borrar
+msgid ""
+"Are you sure you want to delete the %(object_name)s \"%(escaped_object)s\"? "
+"All of the following related items will be deleted:"
+msgstr ""
+"¿Seguro que quieres borrar %(object_name)s «%(escaped_object)s»? También se "
+"borrarán estos elementos relacionados:"
+
+msgid ""
+"Deleting the %(object_name)s '%(escaped_object)s' would require deleting the "
+"following protected related objects:"
+msgstr ""
+"Para borrar %(object_name)s «%(escaped_object)s» habría que borrar también "
+"estos elementos protegidos:"
+
+msgid ""
+"Deleting the %(object_name)s '%(escaped_object)s' would result in deleting "
+"related objects, but your account doesn't have permission to delete the "
+"following types of objects:"
+msgstr ""
+"Borrar %(object_name)s «%(escaped_object)s» también borraría elementos "
+"relacionados, pero tu cuenta no tiene permiso para borrar estos tipos de "
+"elementos:"
+
+# Buscador y atajos de teclado
+msgid "Nothing matched your search"
+msgstr "No se encontró nada"
+
+msgid "Recent searches"
+msgstr "Búsquedas recientes"
+
+msgid "Select"
+msgstr "Elegir"
+
+msgid "Navigate"
+msgstr "Moverse"
+
+msgid "Available shortcuts"
+msgstr "Atajos disponibles"
+
+msgid "Global shortcuts"
+msgstr "Atajos generales"
+
+msgid "Changelist shortcuts"
+msgstr "Atajos de las listas"
+
+msgid "Command tool shortcuts"
+msgstr "Atajos del buscador"
+
+msgid "Create new record"
+msgstr "Agregar uno nuevo"
+
+msgid "Open command tool"
+msgstr "Abrir el buscador"
+
+msgid "Open selection"
+msgstr "Abrir lo seleccionado"
+
+msgid "Open selection in new tab"
+msgstr "Abrir lo seleccionado en otra pestaña"
+
+msgid "Open shortcuts list"
+msgstr "Ver los atajos"
+
+msgid "Toggle dark/light mode"
+msgstr "Cambiar entre modo claro y oscuro"
+
+msgid "Toggle filter"
+msgstr "Mostrar u ocultar los filtros"
+
+msgid "Toggle sidebar"
+msgstr "Mostrar u ocultar el menú"

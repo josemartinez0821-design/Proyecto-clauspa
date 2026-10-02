@@ -1,0 +1,60 @@
+{% extends "admin/base.html" %}
+{% load unfold %}
+
+{% comment %}Inicio del panel: saludo, resumen y accesos rápidos. Los datos salen de config/panel.py.{% endcomment %}
+
+{% block title %}Inicio | {{ site_title }}{% endblock %}
+
+{% block branding %}
+    {% include "unfold/helpers/site_branding.html" %}
+{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-8">
+    <div class="flex flex-col gap-4 justify-between md:flex-row md:items-center">
+        <div>
+            {% component "unfold/components/title.html" %}Hola{% if request.user.first_name %}, {{ request.user.first_name }}{% endif %}{% endcomponent %}
+            {% component "unfold/components/text.html" with class="text-subtle mt-1" %}Desde aquí manejas todo lo que se ve en tu página.{% endcomponent %}
+        </div>
+        {% component "unfold/components/button.html" with href="/" variant="default" icon="open_in_new" %}Ver mi página{% endcomponent %}
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        {% for item in resumen %}
+            {% component "unfold/components/card.html" with href=item.enlace %}
+                <p class="text-sm text-subtle">{{ item.titulo }}</p>
+                <p class="font-semibold mt-1 text-3xl text-important">{{ item.valor }}</p>
+            {% endcomponent %}
+        {% endfor %}
+    </div>
+
+    <div>
+        <h2 class="font-semibold mb-4 text-lg text-important">Accesos rápidos</h2>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {% for item in accesos %}
+                {% component "unfold/components/card.html" with href=item.enlace %}
+                    <div class="flex flex-row gap-3 items-start">
+                        <span class="bg-primary-50 flex h-10 items-center justify-center rounded-full shrink-0 text-primary-600 w-10 dark:bg-primary-500/20 dark:text-primary-400 material-symbols-outlined">{{ item.icono }}</span>
+                        <div>
+                            <p class="font-semibold text-important">{{ item.titulo }}</p>
+                            <p class="text-sm text-subtle">{{ item.texto }}</p>
+                        </div>
+                    </div>
+                {% endcomponent %}
+            {% endfor %}
+        </div>
+    </div>
+
+    {% component "unfold/components/card.html" with class="border-dashed" %}
+        <div class="flex flex-row gap-3 items-start">
+            <span class="bg-primary-50 flex h-10 items-center justify-center rounded-full shrink-0 text-primary-600 w-10 dark:bg-primary-500/20 dark:text-primary-400 material-symbols-outlined">calendar_month</span>
+            <div>
+                <p class="font-semibold text-important">Próximamente: agenda en línea</p>
+                <p class="text-sm text-subtle">Tus clientes podrán pedir cita desde la página y tú la confirmarás aquí.</p>
+            </div>
+        </div>
+    {% endcomponent %}
+</div>
+{% endblock %}

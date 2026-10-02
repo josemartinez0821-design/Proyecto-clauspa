@@ -1,6 +1,6 @@
 # Requisitos de Claudia Spa
 
-Qué hace el sistema, punto por punto. Actualizado el 29/09/2026.
+Qué hace el sistema, punto por punto. Actualizado el 01/10/2026.
 
 - **S** = sitio público (funcional)
 - **P** = panel de la dueña (funcional)
@@ -18,7 +18,7 @@ detalle de cada servicio (por ejemplo `/faciales/limpieza-facial-profunda/`).
 | S-02 | Slider de Inicio | De 1 a 4 diapositivas con imagen, título, texto corto y un botón. Avanza sola cada 6 s con transición suave; se pausa al pasar el mouse o al tocarla; flechas y puntos (en el celular solo puntos y deslizar con el dedo). Con una sola diapositiva no se mueve. Texto sobre una capa oscura suave |
 | S-03 | Resto de Inicio | Servicios destacados, sección de tecnología, resumen de Nosotros con enlace a su página y franja con dirección, horario y enlace a Contacto |
 | S-04 | Lista de servicios | Una página por categoría con tarjetas: foto, nombre, descripción breve, duración aproximada y precio. Solo los visibles, en el orden que defina la dueña. Los combos llevan la etiqueta "Combo" y el precio anterior tachado |
-| S-05 | Detalle del servicio | Fotos, descripción, precio, duración aproximada y desplegables: **Qué incluye**, **Antes de tu cita**, **Después de tu cita** (con la nota "Además, te damos indicaciones personalizadas según tu tipo de piel") y Recomendaciones |
+| S-05 | Detalle del servicio | Fotos, descripción completa (en párrafos), **Ideal para**, precio, duración aproximada y desplegables: **Qué incluye**, **Antes de tu cita** (por ejemplo "Ven sin maquillaje"), **Después de tu cita** (con la nota "Además, te damos indicaciones personalizadas según tu tipo de piel"), **Avísanos antes si…** (embarazo, alergias, medicamentos…) y Recomendaciones (frecuencia y sesiones). Cada servicio tiene los suyos; un apartado vacío no se muestra |
 | S-06 | "También te puede interesar" | Hasta 3 servicios de la misma categoría al final del detalle |
 | S-07 | Precios | En pesos colombianos, fijos ("$80.000") o "desde" ("Desde $80.000"), con sufijo opcional ("por sesión") |
 | S-08 | Duraciones | Siempre aproximadas ("Aprox. 45 a 60 min"; desde 2 h se muestran en horas), con la nota "Los tiempos pueden variar según cada persona" |
@@ -38,7 +38,7 @@ detalle de cada servicio (por ejemplo `/faciales/limpieza-facial-profunda/`).
 | P-01 | Iniciar sesión | Con correo o usuario y contraseña; botón para cerrar sesión |
 | P-02 | Recuperar la contraseña | El enlace llega al correo del hijo (ella no usa Gmail) |
 | P-03 | Cambiar la contraseña | Desde "Mi cuenta" |
-| P-04 | Servicios | Crear, editar, ocultar, ordenar y destacar. Campos: nombre, categoría, es combo, descripción breve y completa, qué incluye, **cuidados antes**, **cuidados después**, recomendaciones, duración mínima y máxima, precio, tipo de precio, precio anterior, sufijo, fotos |
+| P-04 | Servicios | Crear, editar, ocultar, ordenar (arrastrando) y destacar. Formulario en pestañas: **Datos básicos** (nombre, dirección web, categoría, es combo, descripción breve, visible, mostrar en Inicio), **Descripción** (completa, ideal para, qué incluye, recomendaciones), **Cuidados** (antes, después, avísanos antes si…), **Precio y duración** (duración mínima y máxima, tipo de precio, precio, sufijo, precio anterior) y **Fotos** |
 | P-05 | Slider | Crear, editar, ordenar, activar o desactivar diapositivas: mínimo 1 y **máximo 4 activas**. Fechas opcionales de inicio y fin para que una promoción aparezca y se quite sola |
 | P-06 | Nosotros | Título, texto, foto de la dueña y fotos del local |
 | P-07 | Preguntas frecuentes | Crear, editar, ordenar y ocultar |

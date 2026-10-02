@@ -8,6 +8,7 @@ clave secreta, modo de desarrollo) se leen del archivo .env, que no se sube a Gi
 from pathlib import Path
 
 import environ
+from django.urls import reverse_lazy
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -33,6 +34,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Apps del proyecto
+    "servicios",
+    "contenido",
 ]
 
 MIDDLEWARE = [
@@ -106,6 +110,10 @@ TIME_ZONE = "America/Bogota"
 USE_I18N = True
 USE_TZ = True
 
+# Traducciones propias: los textos de Unfold que Django no trae en español.
+# Después de editar el .po: python manage.py compilar_traducciones
+LOCALE_PATHS = [BASE_DIR / "locale"]
+
 
 # Archivos estáticos (CSS, JavaScript, imágenes del diseño) y fotos que sube la dueña
 
@@ -135,6 +143,67 @@ UNFOLD = {
     "SITE_SUBHEADER": "Relajación y belleza",
     "SITE_SYMBOL": "spa",
     "SHOW_HISTORY": False,
+    "DASHBOARD_CALLBACK": "config.panel.inicio",
+    # Menú lateral: las secciones del boceto, en el mismo orden.
+    "SIDEBAR": {
+        "show_search": False,
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": "Mi página",
+                "items": [
+                    {"title": "Inicio", "icon": "home", "link": reverse_lazy("admin:index")},
+                    {
+                        "title": "Servicios",
+                        "icon": "spa",
+                        "link": reverse_lazy("admin:servicios_servicio_changelist"),
+                    },
+                    {
+                        "title": "Slider",
+                        "icon": "view_carousel",
+                        "link": reverse_lazy("admin:contenido_diapositiva_changelist"),
+                    },
+                    {
+                        "title": "Tecnología",
+                        "icon": "auto_awesome",
+                        "link": reverse_lazy("admin:contenido_tecnologia_changelist"),
+                    },
+                    {
+                        "title": "Preguntas frecuentes",
+                        "icon": "help",
+                        "link": reverse_lazy("admin:contenido_preguntafrecuente_changelist"),
+                    },
+                    {
+                        "title": "Nosotros",
+                        "icon": "favorite",
+                        "link": reverse_lazy("admin:contenido_nosotros_changelist"),
+                    },
+                    {
+                        "title": "Datos del negocio",
+                        "icon": "storefront",
+                        "link": reverse_lazy("admin:contenido_negocio_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Mi cuenta",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Cambiar mi contraseña",
+                        "icon": "lock",
+                        "link": reverse_lazy("admin:password_change"),
+                    },
+                    {
+                        "title": "Usuarios",
+                        "icon": "group",
+                        "link": reverse_lazy("admin:auth_user_changelist"),
+                        "permission": "config.panel.solo_administrador",
+                    },
+                ],
+            },
+        ],
+    },
     "COLORS": {
         "primary": {
             "50": "oklch(97.6% 0.018 339.3)",

@@ -5,6 +5,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
+admin.site.index_title = "Inicio"
+
 urlpatterns = [
     path("panel/", admin.site.urls),
 ]
