@@ -106,10 +106,21 @@ class PaginasDeServicios(TestCase):
                       "según tu tipo de piel", "Avísanos antes si…", "Estás en embarazo", "Recomendaciones"):
             self.assertContains(respuesta, texto)
 
-    def test_el_boton_de_whatsapp_lleva_el_nombre_del_servicio(self):
+    def test_el_boton_de_whatsapp_del_detalle_pregunta_por_el_servicio(self):
         respuesta = self.client.get(self.limpieza.get_absolute_url())
+        mensaje = "Hola, vi la página de Claudia Spa y quiero saber más sobre el servicio Limpieza facial profunda."
+        self.assertContains(respuesta, Negocio.cargar().enlace_whatsapp(mensaje))
+
+    def test_el_boton_pedir_cita_de_las_tarjetas_lleva_el_nombre_del_servicio(self):
+        respuesta = self.client.get(reverse("faciales"))
         mensaje = "Hola, vi la página de Claudia Spa y quiero pedir una cita para Limpieza facial profunda."
         self.assertContains(respuesta, Negocio.cargar().enlace_whatsapp(mensaje))
+
+    def test_con_numero_el_boton_abre_directo_el_chat_del_spa(self):
+        negocio = Negocio.cargar()
+        negocio.whatsapp = "3001234567"
+        negocio.save()
+        self.assertContains(self.client.get(self.limpieza.get_absolute_url()), 'href="https://wa.me/573001234567?text=')
 
     def test_los_apartados_vacios_no_se_muestran(self):
         respuesta = self.client.get(self.masaje.get_absolute_url())

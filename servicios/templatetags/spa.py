@@ -102,8 +102,17 @@ def datos_negocio(context):
 
 @register.simple_tag(takes_context=True)
 def cita_whatsapp(context, servicio):
-    """Enlace de WhatsApp con el mensaje para pedir cita de ese servicio (requisito S-09)."""
+    """Enlace de WhatsApp con el mensaje para pedir cita de ese servicio (botón "Pedir cita" de las tarjetas)."""
     negocio = context["negocio"]
     return negocio.enlace_whatsapp(
         f"Hola, vi la página de {negocio.nombre} y quiero pedir una cita para {servicio.nombre}."
+    )
+
+
+@register.simple_tag(takes_context=True)
+def informacion_whatsapp(context, servicio):
+    """Enlace de WhatsApp con el mensaje para preguntar por ese servicio (botón del detalle, requisito S-09)."""
+    negocio = context["negocio"]
+    return negocio.enlace_whatsapp(
+        f"Hola, vi la página de {negocio.nombre} y quiero saber más sobre el servicio {servicio.nombre}."
     )

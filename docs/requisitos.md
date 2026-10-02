@@ -22,7 +22,7 @@ detalle de cada servicio (por ejemplo `/faciales/limpieza-facial-profunda/`).
 | S-06 | "También te puede interesar" | Hasta 3 servicios de la misma categoría al final del detalle |
 | S-07 | Precios | En pesos colombianos, fijos ("$80.000") o "desde" ("Desde $80.000"), con sufijo opcional ("por sesión") |
 | S-08 | Duraciones | Siempre aproximadas ("Aprox. 45 a 60 min"; desde 2 h se muestran en horas: "Aprox. 2 h a 2 h 30 min"; en paquetes, "por sesión"), con la nota "Los tiempos pueden variar según cada persona" |
-| S-09 | Botón WhatsApp | Abre el chat del spa con el mensaje "Hola, vi la página de Claudia Spa y quiero pedir una cita para <servicio>." |
+| S-09 | Botón WhatsApp | Abre el chat del spa con el mensaje ya escrito; la persona solo lo envía (WhatsApp no deja enviarlo solo). En el detalle ("Preguntar por WhatsApp"): "Hola, vi la página de Claudia Spa y quiero saber más sobre el servicio <servicio>."; en las tarjetas ("Pedir cita"): "Hola, vi la página de Claudia Spa y quiero pedir una cita para <servicio>." |
 | S-10 | Botón Llamar | En el celular marca directo; en el computador muestra el número |
 | S-11 | WhatsApp flotante | En todas las páginas, con saludo; ningún elemento lo tapa |
 | S-12 | Nosotros | Historia, quién es la dueña (foto y texto breve con su experiencia), fotos del local y enlace a reseñas de Google. **Sin fotos de diplomas** |

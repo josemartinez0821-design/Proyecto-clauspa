@@ -63,8 +63,8 @@
       </dl>
 
       <div class="flex flex-wrap gap-2.5">
-        <a href="{% cita_whatsapp servicio %}" target="_blank" rel="noopener" class="btn btn-whatsapp min-w-[180px] flex-1 px-[22px] py-3.5">
-          <svg class="icono" aria-hidden="true"><use href="#i-chat"/></svg>Pedir cita por WhatsApp
+        <a href="{% informacion_whatsapp servicio %}" target="_blank" rel="noopener" class="btn btn-whatsapp min-w-[180px] flex-1 px-[22px] py-3.5">
+          <svg class="icono" aria-hidden="true"><use href="#i-chat"/></svg>Preguntar por WhatsApp
         </a>
         {% if negocio.telefono %}
           {# En el celular marca directo; en el computador muestra el número #}
@@ -74,7 +74,10 @@
           </a>
         {% endif %}
       </div>
-      <p class="mt-2.5 text-[13px] text-texto-2">Los tiempos son aproximados y pueden variar según cada persona. Te pedimos llegar 10 minutos antes.</p>
+      <p class="mt-2.5 text-[13px] text-texto-2">
+        Se abre el chat con tu mensaje listo; solo tienes que enviarlo. Ahí te contamos todo y te damos tu cita.
+        Los tiempos son aproximados y pueden variar según cada persona. Te pedimos llegar 10 minutos antes.
+      </p>
 
       <div class="mt-6">
         {% with pasos=servicio.que_incluye|lineas %}
