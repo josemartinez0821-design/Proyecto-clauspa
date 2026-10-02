@@ -37,7 +37,7 @@ destacado, visible, orden, creado, actualizado.
 servicio (FK → servicio, se borra con él), imagen, texto_alternativo, orden.
 
 ### `diapositiva`
-imagen, titulo, texto, texto_boton, destino (servicio, faciales, corporales, whatsapp, contacto o tecnología),
+imagen, antetitulo (opcional, por ejemplo "Promoción del mes"), titulo, texto, texto_boton, destino (servicio, faciales, corporales, whatsapp, contacto o tecnología),
 servicio (FK opcional → servicio; si el servicio se borra, queda vacío), activa, orden, fecha_inicio y fecha_fin
 (opcionales).
 

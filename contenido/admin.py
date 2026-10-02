@@ -115,7 +115,7 @@ class DiapositivaAdmin(ModelAdmin):
     warn_unsaved_form = True
     actions = None
     fieldsets = (
-        (None, {"fields": ("imagen", "titulo", "texto")}),
+        (None, {"fields": ("imagen", "antetitulo", "titulo", "texto")}),
         ("Botón", {"fields": ("texto_boton", "destino", "servicio")}),
         ("Cuándo se muestra", {"fields": ("activa", ("fecha_inicio", "fecha_fin"))}),
     )

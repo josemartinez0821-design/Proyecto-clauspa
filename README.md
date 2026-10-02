@@ -27,7 +27,14 @@ Tailwind CSS, Alpine.js y Swiper (en el sitio público).
    .venv\Scripts\python.exe manage.py createsuperuser
    ```
 
-5. Encender el servidor y abrir <http://127.0.0.1:8000/panel/>:
+5. (Opcional) Cargar los datos de ejemplo: 8 servicios, slider, tecnología, preguntas, horario y fotos de ejemplo.
+   Solo funciona con `DEBUG=True` y se puede repetir sin duplicar nada:
+
+   ```bash
+   .venv\Scripts\python.exe manage.py cargar_ejemplos
+   ```
+
+6. Encender el servidor y abrir <http://127.0.0.1:8000/panel/>:
 
    ```bash
    .venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000

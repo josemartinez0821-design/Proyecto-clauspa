@@ -161,6 +161,9 @@ class Diapositiva(models.Model):
         validators=VALIDADORES_FOTO,
         help_text="Horizontal y de buena calidad (al menos 1600 píxeles de ancho).",
     )
+    antetitulo = models.CharField(
+        "texto pequeño sobre el título", max_length=40, blank=True, help_text="Opcional. Ejemplo: Promoción del mes."
+    )
     titulo = models.CharField("título", max_length=80)
     texto = models.CharField("texto corto", max_length=160, blank=True)
     texto_boton = models.CharField("texto del botón", max_length=30, default="Ver más")

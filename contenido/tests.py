@@ -1,22 +1,21 @@
 import shutil
 import tempfile
 from datetime import date, time
-from io import BytesIO
+from io import BytesIO, StringIO
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.management import CommandError, call_command
 from django.forms import inlineformset_factory
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from PIL import Image
 
-from servicios.models import Servicio
+from servicios.models import FotoServicio, Servicio
 
 from .admin import HorarioFormSet
-from .models import Diapositiva, FotoLocal, HorarioAtencion, Negocio, solo_digitos
-
-MEDIA_TEMPORAL = tempfile.mkdtemp()
+from .models import Diapositiva, FotoLocal, HorarioAtencion, Negocio, PreguntaFrecuente, Tecnologia, solo_digitos
 
 
 def foto_png(ancho=3000, alto=2000):
@@ -25,13 +24,18 @@ def foto_png(ancho=3000, alto=2000):
     return SimpleUploadedFile("Foto del Spa.png", salida.getvalue(), content_type="image/png")
 
 
-@override_settings(MEDIA_ROOT=MEDIA_TEMPORAL)
-class Fotos(TestCase):
-    @classmethod
-    def tearDownClass(cls):
-        super().tearDownClass()
-        shutil.rmtree(MEDIA_TEMPORAL, ignore_errors=True)
+class ConMediaTemporal(TestCase):
+    """Las fotos de estas pruebas se guardan en una carpeta temporal que se borra al terminar."""
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        carpeta = tempfile.mkdtemp()
+        cls.enterClassContext(override_settings(MEDIA_ROOT=carpeta))
+        cls.addClassCleanup(shutil.rmtree, carpeta, True)
+
+
+class Fotos(ConMediaTemporal):
     def test_la_foto_se_reduce_y_se_guarda_en_webp(self):
         foto = FotoLocal.objects.create(negocio=Negocio.cargar(), imagen=foto_png(), texto_alternativo="Sala")
         self.assertTrue(foto.imagen.name.startswith("local/foto-del-spa"))
@@ -46,6 +50,41 @@ class Fotos(TestCase):
         foto.texto_alternativo = "Sala de espera"
         foto.save()
         self.assertEqual(foto.imagen.name, nombre)
+
+
+@override_settings(DEBUG=True)
+class DatosDeEjemplo(ConMediaTemporal):
+    def test_carga_todo_y_se_puede_repetir_sin_duplicar(self):
+        call_command("cargar_ejemplos", stdout=StringIO())
+        call_command("cargar_ejemplos", stdout=StringIO())
+
+        self.assertEqual(Servicio.objects.count(), 8)
+        self.assertEqual(FotoServicio.objects.count(), 8)
+        self.assertEqual(Servicio.objects.filter(destacado=True).count(), 4)
+        self.assertEqual(Servicio.objects.filter(es_combo=True).count(), 2)
+        self.assertEqual(Diapositiva.objects.count(), 4)
+        self.assertEqual(Diapositiva.objects.filter(activa=True).count(), 3)
+        self.assertEqual(Tecnologia.objects.count(), 3)
+        self.assertEqual(PreguntaFrecuente.objects.count(), 5)
+        negocio = Negocio.cargar()
+        self.assertEqual(negocio.horarios.count(), 12)
+        self.assertEqual(negocio.fotos_local.count(), 3)
+
+    def test_los_datos_cumplen_las_reglas_del_panel(self):
+        call_command("cargar_ejemplos", stdout=StringIO())
+        for servicio in Servicio.objects.all():
+            servicio.full_clean()
+            self.assertTrue(servicio.cuidados_antes and servicio.cuidados_despues and servicio.consultar_antes)
+        for diapositiva in Diapositiva.objects.all():
+            diapositiva.full_clean()
+            self.assertTrue(diapositiva.imagen.name.endswith(".webp"))
+        for franja in HorarioAtencion.objects.all():
+            franja.full_clean()
+
+    @override_settings(DEBUG=False)
+    def test_no_se_carga_en_el_servidor(self):
+        with self.assertRaises(CommandError):
+            call_command("cargar_ejemplos", stdout=StringIO())
 
 
 class DatosDelNegocio(TestCase):
@@ -128,7 +167,7 @@ class Panel(TestCase):
         self.client.force_login(User.objects.create_superuser("prueba", "prueba@ejemplo.com", "x"))
 
     def test_todas_las_secciones_abren(self):
-        Servicio.objects.create(
+        masaje = Servicio.objects.create(
             nombre="Masaje", slug="masaje", categoria="corporal", descripcion_breve="b", descripcion="d",
             duracion_min=50, duracion_max=60, precio=70000,
         )
@@ -137,7 +176,7 @@ class Panel(TestCase):
             for vista in ("changelist", "add"):
                 respuesta = self.client.get(reverse(f"admin:{nombre}_{vista}"))
                 self.assertEqual(respuesta.status_code, 200, f"{nombre} {vista}")
-        respuesta = self.client.get(reverse("admin:servicios_servicio_change", args=[1]))
+        respuesta = self.client.get(reverse("admin:servicios_servicio_change", args=[masaje.pk]))
         self.assertContains(respuesta, "Cuidados")
 
     def test_negocio_y_nosotros_abren_directo_el_formulario(self):
