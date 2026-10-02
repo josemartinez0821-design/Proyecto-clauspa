@@ -15,6 +15,7 @@ from PIL import Image
 from servicios.models import FotoServicio, Servicio
 
 from .admin import HorarioFormSet
+from .horario import hora_texto, resumir_horario
 from .models import Diapositiva, FotoLocal, HorarioAtencion, Negocio, PreguntaFrecuente, Tecnologia, solo_digitos
 
 
@@ -129,6 +130,75 @@ class Horario(TestCase):
         franja = HorarioAtencion(negocio=Negocio.cargar(), dia_semana=1, hora_apertura=time(14), hora_cierre=time(9))
         with self.assertRaises(ValidationError):
             franja.full_clean()
+
+
+class HorarioEnTexto(TestCase):
+    def franja(self, dia, abre, cierra):
+        return HorarioAtencion(dia_semana=dia, hora_apertura=time(*abre), hora_cierre=time(*cierra))
+
+    def test_horas_como_se_dicen_en_colombia(self):
+        self.assertEqual(hora_texto(time(9)), "9 a. m.")
+        self.assertEqual(hora_texto(time(14, 30)), "2:30 p. m.")
+        self.assertEqual(hora_texto(time(12)), "12 m.")
+        self.assertEqual(hora_texto(time(0, 15)), "12:15 a. m.")
+
+    def test_junta_los_dias_seguidos_con_el_mismo_horario(self):
+        franjas = [self.franja(d, (9,), (13,)) for d in range(1, 7)] + [self.franja(d, (14,), (19,)) for d in range(1, 7)]
+        self.assertEqual(
+            resumir_horario(franjas),
+            [
+                {"dias": "Lunes a sábado", "franjas": ["9 a. m. a 1 p. m.", "2 p. m. a 7 p. m."]},
+                {"dias": "Domingo", "franjas": []},
+            ],
+        )
+
+    def test_dias_distintos_quedan_aparte(self):
+        franjas = [self.franja(d, (9,), (19,)) for d in range(1, 6)] + [self.franja(6, (9,), (13,))]
+        resumen = resumir_horario(franjas)
+        self.assertEqual([grupo["dias"] for grupo in resumen], ["Lunes a viernes", "Sábado", "Domingo"])
+        self.assertEqual(resumen[1]["franjas"], ["9 a. m. a 1 p. m."])
+
+
+class EnlacesDelNegocio(TestCase):
+    def test_whatsapp_con_numero_y_mensaje(self):
+        negocio = Negocio(whatsapp="3001234567")
+        self.assertEqual(
+            negocio.enlace_whatsapp("Hola, quiero una cita para Masaje relajante."),
+            "https://wa.me/573001234567?text=Hola%2C%20quiero%20una%20cita%20para%20Masaje%20relajante.",
+        )
+
+    def test_sin_numero_whatsapp_deja_elegir_el_chat(self):
+        self.assertTrue(Negocio().enlace_whatsapp().startswith("https://wa.me/?text=Hola"))
+
+    def test_telefono_y_nombre(self):
+        negocio = Negocio(telefono="6012345678")
+        self.assertEqual(negocio.enlace_telefono, "tel:+576012345678")
+        self.assertEqual(negocio.telefono_visible, "601 234 5678")
+        self.assertEqual(negocio.partes_nombre, ("Claudia", "Spa"))
+
+
+class SitioPublico(TestCase):
+    PAGINAS = ("inicio", "faciales", "corporales", "nosotros", "contacto", "privacidad")
+
+    def test_todas_las_paginas_tienen_encabezado_pie_y_whatsapp(self):
+        for nombre in self.PAGINAS:
+            respuesta = self.client.get(reverse(nombre))
+            self.assertEqual(respuesta.status_code, 200, nombre)
+            self.assertContains(respuesta, "Relajación y belleza")
+            self.assertContains(respuesta, "Aviso de privacidad")
+            self.assertContains(respuesta, 'aria-label="Escribir por WhatsApp"')
+
+    def test_el_menu_marca_la_pagina_actual(self):
+        respuesta = self.client.get(reverse("corporales"))
+        self.assertContains(respuesta, 'aria-current="page"', count=2)  # menú del computador y del celular
+        self.assertRegex(respuesta.content.decode(), r'href="/corporales/"[^>]*\n?\s*aria-current="page"')
+
+    def test_el_pie_muestra_el_horario(self):
+        negocio = Negocio.cargar()
+        negocio.horarios.create(dia_semana=1, hora_apertura=time(9), hora_cierre=time(13))
+        respuesta = self.client.get(reverse("contacto"))
+        self.assertContains(respuesta, "Lunes")
+        self.assertContains(respuesta, "9 a. m. a 1 p. m.")
 
 
 class Slider(TestCase):

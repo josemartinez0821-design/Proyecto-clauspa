@@ -44,6 +44,10 @@ para que ella cambie servicios, precios, fotos y textos sin ayuda. Las citas se 
 | 01/10/2026 | "Destacados" de Inicio = los 4 más pedidos según la dueña: limpieza facial, plasma, masaje relajante y levantamiento de glúteos (el combo sale en el slider) |
 | 01/10/2026 | Las diapositivas llevan un texto pequeño opcional sobre el título ("Promoción del mes"), como en el boceto |
 | 01/10/2026 | La dirección del spa no va en el repositorio público: se escribe en el panel |
+| 01/10/2026 | Clientes sin registro ni cuentas: piden la cita por WhatsApp o llamada (fase 1) o con la agenda en línea solo con nombre y celular (fase 2) |
+| 01/10/2026 | Tailwind CSS 4 (sí funciona con Smart App Control), Alpine.js y Swiper instalados con npm. El CSS compilado y las librerías se guardan en `static/` y se suben al repositorio: el servidor no necesita Node |
+| 01/10/2026 | Letras desde Google Fonts por ahora; en la etapa 6 se decide si se sirven desde el propio sitio |
+| 01/10/2026 | Mientras no haya número de WhatsApp, los botones abren WhatsApp con el mensaje y dejan elegir el chat |
 
 ## Lo que NO hace (por ahora)
 
@@ -72,7 +76,7 @@ aplicación para instalar y ficha clínica (datos de salud sensibles).
 |---|---|
 | Páginas y lógica | Django 6.1 (plantillas renderizadas en el servidor, sin React ni Vue) |
 | Panel de la dueña | Django Admin + django-unfold |
-| Diseño | Tailwind CSS (compilado con Node 24) |
+| Diseño | Tailwind CSS 4 (compilado con Node 24; fuente en `static/src/sitio.css`) |
 | Interacciones | Alpine.js; htmx opcional para la agenda de la fase 2 |
 | Slider | Swiper |
 | Fotos | Pillow (reducir y convertir a WebP) |
@@ -86,8 +90,8 @@ aplicación para instalar y ficha clínica (datos de salud sensibles).
 | 1. La base | Django + MariaDB + panel en /panel/ | ✅ Lista (29/09/2026) |
 | 2. Las tablas | Modelos de la fase 1, panel con sus secciones, traducir Unfold al español | ✅ Lista (01/10/2026) |
 | 3. Datos de ejemplo | Los 8 servicios con descripción y cuidados completos, el slider, la tecnología, las preguntas y el horario | ✅ Lista (01/10/2026) |
-| 4. El diseño | Tailwind, plantilla base, encabezado, pie y WhatsApp flotante | Siguiente |
-| 5. Las páginas | Inicio, Faciales, Corporales, detalle, Nosotros, Contacto, aviso de privacidad, 404 | |
+| 4. El diseño | Tailwind, plantilla base, encabezado, pie y WhatsApp flotante | ✅ Lista (01/10/2026) |
+| 5. Las páginas | Inicio, Faciales, Corporales, detalle, Nosotros, Contacto, aviso de privacidad, 404 | Siguiente |
 | 6. Calidad | Fotos WebP, Google (SEO), pruebas en computador y celular | |
 | 7. Prueba con la dueña | Ajustes y publicación | |
 | Fase 2 | Agenda en línea | |

@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 media/
 staticfiles/
+node_modules/
 
 # Respuestas de la dueña a la entrevista: se quedan en el PC (el repositorio es público).
 docs/entrevista-duena.md

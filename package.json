@@ -1,0 +1,19 @@
+{
+  "name": "claudia-spa",
+  "private": true,
+  "description": "Estilos y scripts del sitio público de Claudia Spa",
+  "scripts": {
+    "css": "tailwindcss -i static/src/sitio.css -o static/css/sitio.css --minify",
+    "css:vigilar": "tailwindcss -i static/src/sitio.css -o static/css/sitio.css --watch",
+    "librerias": "node static/src/copiar-librerias.mjs",
+    "construir": "npm run librerias && npm run css"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "tailwindcss": "^4.3.3"
+  },
+  "dependencies": {
+    "alpinejs": "^3.17.4",
+    "swiper": "^14.3.0"
+  }
+}

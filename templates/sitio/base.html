@@ -1,0 +1,29 @@
+{% load static %}<!doctype html>
+<html lang="es-CO">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}{{ negocio.nombre }} · {{ negocio.lema }}{% endblock %}</title>
+  <meta name="description" content="{% block descripcion %}{{ negocio.nombre }}: tratamientos faciales y corporales con atención personalizada. Pide tu cita por WhatsApp.{% endblock %}">
+  <link rel="icon" href="{% static 'img/logo-simbolo.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Great+Vibes&family=Jost:wght@400;500&display=swap">
+  <link rel="stylesheet" href="{% static 'css/sitio.css' %}">
+  {% block cabeza %}{% endblock %}
+  <script defer src="{% static 'vendor/alpine.min.js' %}"></script>
+</head>
+<body class="flex min-h-screen flex-col">
+  <a href="#contenido" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:shadow">Saltar al contenido</a>
+  {% include "sitio/partes/iconos.html" %}
+  {% include "sitio/partes/encabezado.html" %}
+
+  <main id="contenido" class="flex-1">
+    {% block contenido %}{% endblock %}
+  </main>
+
+  {% include "sitio/partes/pie.html" %}
+  {% include "sitio/partes/whatsapp_flotante.html" %}
+  {% block scripts %}{% endblock %}
+</body>
+</html>

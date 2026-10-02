@@ -1,0 +1,55 @@
+{% load static %}
+{# Pie de página: logo en círculo, dirección, horario, contacto, redes y aviso de privacidad. #}
+<footer class="bg-primario-oscuro pt-14 pb-28 text-white">
+  <div class="contenedor">
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
+      <div>
+        <img src="{% static 'img/logo-circulo.png' %}" alt="Logo de {{ negocio.nombre }}" width="120" height="120" loading="lazy" class="size-[120px] rounded-full">
+        <p class="mt-3.5 text-[15px] text-white/85">Faciales y corporales con atención personalizada.</p>
+      </div>
+
+      {% if negocio.direccion or negocio.ubicacion %}
+        <div>
+          <h2 class="mb-2.5 font-texto text-[15px] font-medium text-acento-claro">Visítanos</h2>
+          {% if negocio.direccion %}<p class="mb-1.5 text-[15px] text-white/85">{{ negocio.direccion }}</p>{% endif %}
+          {% if negocio.ubicacion %}<p class="mb-1.5 text-[15px] text-white/85">{{ negocio.ubicacion }}</p>{% endif %}
+          {% if negocio.enlace_mapa %}
+            <a href="{{ negocio.enlace_mapa }}" target="_blank" rel="noopener" class="text-[15px] text-white/85 underline-offset-4 hover:text-white hover:underline">Cómo llegar</a>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if negocio.horario_resumido %}
+        <div>
+          <h2 class="mb-2.5 font-texto text-[15px] font-medium text-acento-claro">Horario</h2>
+          {% for grupo in negocio.horario_resumido %}
+            {% if grupo.franjas %}
+              <p class="mb-2 text-[15px] text-white/85">
+                <span class="block">{{ grupo.dias }}</span>
+                {% for franja in grupo.franjas %}<span class="block">{{ franja }}</span>{% endfor %}
+              </p>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div>
+        <h2 class="mb-2.5 font-texto text-[15px] font-medium text-acento-claro">Contacto</h2>
+        <ul class="space-y-1.5 text-[15px] text-white/85">
+          <li><a href="{{ negocio.enlace_whatsapp }}" target="_blank" rel="noopener" class="underline-offset-4 hover:text-white hover:underline">WhatsApp</a></li>
+          {% if negocio.telefono %}
+            <li><a href="{{ negocio.enlace_telefono }}" class="underline-offset-4 hover:text-white hover:underline">Llamar al {{ negocio.telefono_visible }}</a></li>
+          {% endif %}
+          {% if negocio.instagram %}<li><a href="{{ negocio.instagram }}" target="_blank" rel="noopener" class="underline-offset-4 hover:text-white hover:underline">Instagram</a></li>{% endif %}
+          {% if negocio.facebook %}<li><a href="{{ negocio.facebook }}" target="_blank" rel="noopener" class="underline-offset-4 hover:text-white hover:underline">Facebook</a></li>{% endif %}
+          {% if negocio.tiktok %}<li><a href="{{ negocio.tiktok }}" target="_blank" rel="noopener" class="underline-offset-4 hover:text-white hover:underline">TikTok</a></li>{% endif %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-9 flex flex-wrap justify-between gap-2 border-t border-white/20 pt-4 text-[13px] text-white/70">
+      <span>© {% now "Y" %} {{ negocio.nombre }}</span>
+      <a href="{% url 'privacidad' %}" class="underline-offset-4 hover:text-white hover:underline">Aviso de privacidad</a>
+    </div>
+  </div>
+</footer>

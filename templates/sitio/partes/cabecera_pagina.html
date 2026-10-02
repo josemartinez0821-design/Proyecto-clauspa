@@ -1,0 +1,11 @@
+{# Franja de título de cada página. Uso: {% include "sitio/partes/cabecera_pagina.html" with titulo="Faciales" texto="…" %} #}
+<section class="bg-suave pt-11 pb-10 text-center">
+  <div class="contenedor">
+    {% url 'inicio' as url_inicio %}
+    {% if request.path != url_inicio %}
+      <p class="mb-1.5 text-sm text-texto-2"><a href="{{ url_inicio }}" class="text-primario underline underline-offset-2">Inicio</a> / {{ titulo }}</p>
+    {% endif %}
+    <h1 class="text-[clamp(42px,6vw,60px)] text-primario-oscuro">{{ titulo }}</h1>
+    {% if texto %}<p class="mt-1 text-texto-2">{{ texto }}</p>{% endif %}
+  </div>
+</section>

@@ -1,0 +1,16 @@
+{% extends "sitio/base.html" %}
+{% comment %}Página provisional de la etapa 4: muestra el diseño base. En la etapa 5 cada página tendrá su contenido.{% endcomment %}
+
+{% block titulo %}{{ titulo }} · {{ negocio.nombre }}{% endblock %}
+
+{% block contenido %}
+  {% include "sitio/partes/cabecera_pagina.html" %}
+  <section class="py-18">
+    <div class="contenedor max-w-xl text-center">
+      <p class="text-texto-2">Esta página está en construcción. Mientras tanto, escríbenos y con gusto te contamos todo.</p>
+      <a href="{{ negocio.enlace_whatsapp }}" target="_blank" rel="noopener" class="btn btn-whatsapp mt-6">
+        <svg class="icono" aria-hidden="true"><use href="#i-chat"/></svg>Escribir por WhatsApp
+      </a>
+    </div>
+  </section>
+{% endblock %}

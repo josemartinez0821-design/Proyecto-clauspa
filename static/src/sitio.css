@@ -1,0 +1,89 @@
+/*
+ * Estilos del sitio público de Claudia Spa (Tailwind CSS 4).
+ * Se compila a static/css/sitio.css con: npm run css  (o npm run css:vigilar mientras se trabaja).
+ * Colores y letras tomados del logo; ver docs/decisiones.md → Diseño.
+ */
+@import "tailwindcss" source(none);
+@source "../../templates";
+
+@theme {
+  --color-primario: #a83a8c;
+  --color-primario-oscuro: #5e1d4c;
+  --color-fucsia-logo: #c749a7;
+  --color-acento: #3f7a12;
+  --color-acento-claro: #a6d96a;
+  --color-verde-logo: #4f8f1c;
+  --color-azul: #3f63b5;
+  --color-fondo: #fffafc;
+  --color-suave: #f8eaf3;
+  --color-texto: #2a1f27;
+  --color-texto-2: #6b5a66;
+  --color-borde: #eedce8;
+  --color-whatsapp: #1f8b4c;
+  --color-whatsapp-oscuro: #176d3b;
+
+  --font-titulo: "Cormorant Garamond", Georgia, serif;
+  --font-texto: "Jost", system-ui, sans-serif;
+  --font-firma: "Great Vibes", cursive;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-fondo font-texto text-base leading-relaxed text-texto;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-titulo leading-tight font-semibold tracking-[.2px];
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primario;
+  }
+  [x-cloak] {
+    display: none !important;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+}
+
+@layer components {
+  .contenedor {
+    @apply mx-auto w-full max-w-[1140px] px-5;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-[22px] py-[11px] text-[15px] font-medium transition active:scale-[.98];
+  }
+  .btn-primario {
+    @apply bg-primario text-white hover:bg-primario-oscuro;
+  }
+  .btn-borde {
+    @apply border border-primario text-primario-oscuro hover:bg-suave;
+  }
+  .btn-claro {
+    @apply bg-white text-primario-oscuro hover:bg-suave;
+  }
+  .btn-whatsapp {
+    @apply bg-whatsapp text-white hover:bg-whatsapp-oscuro;
+  }
+  .icono {
+    @apply size-5 shrink-0 fill-none stroke-current stroke-[1.7];
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* Texto pequeño en mayúsculas sobre los títulos ("Destacados", "Tecnología"…) */
+  .antetitulo {
+    @apply text-xs tracking-[3px] text-primario uppercase;
+  }
+}

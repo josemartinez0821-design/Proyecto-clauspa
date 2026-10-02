@@ -1,0 +1,43 @@
+{% load static %}
+{# Encabezado fijo arriba. En el computador, menú completo; en el celular, logo y botón ☰ (Alpine.js). #}
+<header x-data="{ abierto: false }" @keydown.escape.window="abierto = false" @click.outside="abierto = false"
+        class="sticky top-0 z-40 border-b border-borde bg-fondo">
+  <div class="contenedor flex h-[68px] items-center justify-between gap-4">
+    {% with partes=negocio.partes_nombre %}
+    <a href="{% url 'inicio' %}" class="flex items-center gap-2.5" aria-label="{{ negocio.nombre }}, ir al inicio">
+      <img src="{% static 'img/logo-simbolo.png' %}" alt="" width="234" height="240" class="h-[52px] w-auto">
+      <span class="font-titulo text-[30px] leading-none font-semibold text-primario-oscuro">
+        <span class="font-firma text-[1.2em] font-normal">{{ partes.0 }}</span>{% if partes.1 %} <span class="text-verde-logo">{{ partes.1 }}</span>{% endif %}
+        <small class="mt-0.5 block font-texto text-[11px] font-normal tracking-[3px] text-azul uppercase">{{ negocio.lema }}</small>
+      </span>
+    </a>
+    {% endwith %}
+
+    <nav aria-label="Principal" class="hidden items-center gap-7 text-[15px] lg:flex">
+      {% for item in menu %}
+        <a href="{{ item.url }}"
+           class="border-b-2 py-1.5 transition-colors hover:border-acento {% if item.activo %}border-acento{% else %}border-transparent{% endif %}"
+           {% if item.activo %}aria-current="page"{% endif %}>{{ item.titulo }}</a>
+      {% endfor %}
+    </nav>
+    <a href="{{ negocio.enlace_whatsapp }}" target="_blank" rel="noopener" class="btn btn-primario hidden lg:inline-flex">Pedir cita</a>
+
+    <button type="button" class="inline-flex size-11 items-center justify-center rounded-xl text-primario-oscuro hover:bg-suave lg:hidden"
+            @click="abierto = !abierto" aria-expanded="false" :aria-expanded="abierto.toString()" aria-controls="menu-movil">
+      <span class="sr-only" x-text="abierto ? 'Cerrar menú' : 'Abrir menú'">Abrir menú</span>
+      <svg class="icono size-[26px]" aria-hidden="true" x-show="!abierto"><use href="#i-menu"/></svg>
+      <svg class="icono size-[26px]" aria-hidden="true" x-show="abierto" x-cloak><use href="#i-x"/></svg>
+    </button>
+  </div>
+
+  <nav id="menu-movil" aria-label="Menú del celular" x-show="abierto" x-cloak x-transition.opacity
+       class="border-t border-borde bg-fondo px-5 pt-2 pb-5 lg:hidden">
+    {% for item in menu %}
+      <a href="{{ item.url }}" class="block border-b border-borde py-3 text-[17px]{% if item.activo %} font-medium text-primario{% endif %}"
+         {% if item.activo %}aria-current="page"{% endif %}>{{ item.titulo }}</a>
+    {% endfor %}
+    <a href="{{ negocio.enlace_whatsapp }}" target="_blank" rel="noopener" class="btn btn-whatsapp mt-4 w-full">
+      <svg class="icono" aria-hidden="true"><use href="#i-chat"/></svg>Pedir cita por WhatsApp
+    </a>
+  </nav>
+</header>

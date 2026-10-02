@@ -42,6 +42,19 @@ Tailwind CSS, Alpine.js y Swiper (en el sitio público).
 
 Se usa PyMySQL en lugar de mysqlclient porque no necesita partes compiladas (ver `config/__init__.py`).
 
+## Estilos del sitio (Tailwind CSS)
+
+El CSS compilado (`static/css/sitio.css`) y las librerías (`static/vendor/`) ya vienen en el repositorio, así que
+para correr el sitio no hace falta Node. Solo se necesita para cambiar el diseño:
+
+```bash
+npm install
+npm run css:vigilar
+```
+
+`css:vigilar` recompila mientras se editan las plantillas. Antes de un commit: `npm run construir` (copia Alpine.js y
+Swiper a `static/vendor/` y genera el CSS minificado).
+
 ## Documentación
 
 En `docs/`: decisiones del proyecto, requisitos y modelo de datos.

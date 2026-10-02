@@ -1,12 +1,15 @@
 """Contenido general de la página: datos del negocio, horario, slider, tecnología, preguntas y fotos del spa."""
 
 import re
+from urllib.parse import quote
 
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import F, Q
+from django.utils.functional import cached_property
 
+from .horario import resumir_horario
 from .imagenes import VALIDADORES_FOTO, convertir_a_webp
 
 
@@ -81,6 +84,37 @@ class Negocio(models.Model):
     def cargar(cls):
         negocio, _ = cls.objects.get_or_create(pk=1)
         return negocio
+
+    def enlace_whatsapp(self, mensaje=None):
+        """Abre el chat del spa con el mensaje ya escrito (si aún no hay número, WhatsApp deja elegir el chat)."""
+        numero = f"57{self.whatsapp}" if self.whatsapp else ""
+        return f"https://wa.me/{numero}?text={quote(mensaje or self.saludo_whatsapp)}"
+
+    @property
+    def enlace_telefono(self):
+        return f"tel:+57{self.telefono}" if self.telefono else ""
+
+    @property
+    def telefono_visible(self):
+        """3001234567 → "300 123 4567"."""
+        t = self.telefono
+        return f"{t[:3]} {t[3:6]} {t[6:]}" if t else ""
+
+    @property
+    def partes_nombre(self):
+        """("Claudia", "Spa"): en el logo de texto la primera palabra va en letra de firma."""
+        primera, _, resto = self.nombre.partition(" ")
+        return primera, resto
+
+    @cached_property
+    def horario_resumido(self):
+        return resumir_horario(self.horarios.all())
+
+    @property
+    def ubicacion(self):
+        """Barrio y ciudad en una línea, con lo que esté lleno: "Barrio Canadá" o "Barrio Canadá, <ciudad>"."""
+        barrio = f"Barrio {self.barrio}" if self.barrio else ""
+        return ", ".join(parte for parte in (barrio, self.ciudad) if parte)
 
     def clean_fields(self, exclude=None):
         # Se aceptan números con espacios, guiones o +57; se guardan solo los 10 dígitos.
